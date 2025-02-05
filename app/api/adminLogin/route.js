@@ -53,6 +53,7 @@ export async function POST(req) {
 
         return response;
     } catch (error) {
+        console.log(error.message)
         return NextResponse.json({ success: false, error: `Server error, contact:${process.env.NEXT_PUBLIC_EMAIl}` })
     }
 }
