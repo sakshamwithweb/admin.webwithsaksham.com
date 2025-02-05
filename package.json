@@ -30,7 +30,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
     "tailwind-merge": "^2.5.5",
-    "tailwind-scrollbar": "^4.0.0",
+    "tailwind-scrollbar": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
     "typed.js": "^2.1.0",
     "uuid4": "^2.0.3"
