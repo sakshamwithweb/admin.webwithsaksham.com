@@ -40,7 +40,7 @@ const Navbar = () => {
     return (
       <nav className='flex mx-auto sticky top-0 p-2 md:p-2 justify-between items-center backdrop-blur border border-b-gray-400/50 z-50'>
         <div className='font-bold text-xl mx-2 md:mx-4'>
-          <Link href={"/"}>SakshamWithWeb</Link>
+          <Link href={"https://www.webwithsaksham.com"}>SakshamWithWeb</Link>
         </div>
         <div className='flex'>
           <span className='hidden md:block'> <ModeToggle /></span>
@@ -79,7 +79,7 @@ const Navbar = () => {
 
   return (
     <nav className='backdrop-blur z-50 sticky top-0 py-2 md:px-11 px-2 border-b flex items-center justify-between'>
-      <Link className='font-bold text-xl' href={"/dashboard"}>SakshamWithWeb</Link>
+      <Link className='font-bold text-xl' href={"https://www.webwithsaksham.com"}>SakshamWithWeb</Link>
       <div className='flex'>
         {/*For Smaller device*/}
         <div className='md:hidden mx-4'>
