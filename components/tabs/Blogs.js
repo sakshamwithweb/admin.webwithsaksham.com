@@ -68,14 +68,21 @@ const Blogs = () => {
         {blogsData.map((item, index) => {
           return (
             <div className='border h-16 relative w-11/12 rounded-2xl flex justify-between items-center' key={index}>
-              <div className='overflow-auto h-full mx-2 scrollbar-thin border-r w-[95%] flex text-lg items-center'>
-                <h2 className='mx-2 whitespace-nowrap'>{item.title}</h2>
+              <div className='overflow-auto h-full md:mr-2 md:ml-2 mr-10 ml-2 scrollbar-thin border-r w-[95%] flex text-lg items-center'>
+                <Link href={`https://blog.webwithsaksham.com/${item.id}`} className='mx-2 whitespace-nowrap'>{item.title}</Link>
               </div>
               <div className='absolute top-4 right-2'>
                 <DropdownMenu>
                   <DropdownMenuTrigger><EllipsisVertical /></DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => { navigator.clipboard.writeText(`hey my name is saksham || paste link here`); toast({ description: `✅ Copied` }); }}>Save Link<Link2Icon /></DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                      navigator.clipboard.writeText(`https://blog.webwithsaksham.com/${item.id}`).then(() => {
+                        toast({ description: `✅ Copied` });
+                      })
+                      .catch(() => {
+                        toast({ description: `❌ Something went wrong` });
+                      });
+                    }}>Save Link<Link2Icon /></DropdownMenuItem>
                     <DropdownMenuItem onClick={() => { handledeletePost(item.id)}}>Delete Post<Trash /></DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
