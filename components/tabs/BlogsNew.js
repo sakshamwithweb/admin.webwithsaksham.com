@@ -15,6 +15,29 @@ import remarkRehype from 'remark-rehype'
 import { unified } from 'unified'
 import rehypePrettyCode from "rehype-pretty-code";
 import { transformerCopyButton } from '@rehype-pretty/transformers'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+
+function getFormattedDate() {
+  const date = new Date();
+  const options = { month: 'long', day: 'numeric', year: 'numeric' };
+  const formattedDate = date.toLocaleDateString('en-US', options);
+
+  const day = date.getDate();
+  const suffix = (day % 10 === 1 && day !== 11) ? "st" :
+    (day % 10 === 2 && day !== 12) ? "nd" :
+      (day % 10 === 3 && day !== 13) ? "rd" : "th";
+
+  return formattedDate.replace(/\d+/, `${day}${suffix}`);
+}
 
 const AdminBlogsNew = () => {
   const { theme } = useTheme();
@@ -23,6 +46,9 @@ const AdminBlogsNew = () => {
   const [id, setId] = useState(null)
   const [htmlContent, setHtmlContent] = useState("")
   const [review, setReview] = useState(false)
+  const [category, setCategory] = useState("other")
+  const [categories, setCategories] = useState([])
+  const [otherCategoryValue, setOtherCategoryValue] = useState("")
   const { toast } = useToast()
 
   const handleSubmit = async () => {
@@ -33,7 +59,7 @@ const AdminBlogsNew = () => {
       headers: {
         "Content-Type": "applicaion/json"
       },
-      body: JSON.stringify({ title, content, publishedTime })
+      body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category })
     })
     const res = await req.json()
     if (res.success && res.id) {
@@ -74,7 +100,29 @@ const AdminBlogsNew = () => {
       }
       processData()
     }
-  }, [content,review])
+  }, [content, review])
+
+
+  useEffect(() => {
+    (async () => {
+      const req = await fetch(`/api/fetchCategories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "applicaion/json"
+        },
+        body: JSON.stringify({})
+      })
+      const res = await req.json()
+      if (!res.success) {
+        toast({
+          title: "❌ Unable to fetch categories!!"
+        })
+        return
+      }
+      setCategories(res.data)
+    })()
+  }, [])
+
 
   if (id) {
     return (
@@ -91,19 +139,6 @@ const AdminBlogsNew = () => {
       </div>
     )
   }
-
-  function getFormattedDate() {
-    const date = new Date();
-    const options = { month: 'long', day: 'numeric', year: 'numeric' };
-    const formattedDate = date.toLocaleDateString('en-US', options);
-    
-    const day = date.getDate();
-    const suffix = (day % 10 === 1 && day !== 11) ? "st" :
-                   (day % 10 === 2 && day !== 12) ? "nd" :
-                   (day % 10 === 3 && day !== 13) ? "rd" : "th";
-
-    return formattedDate.replace(/\d+/, `${day}${suffix}`);
-}
 
   return (
     <div className="min-h-screen flex flex-col gap-5 mx-4 border-b relative">
@@ -127,6 +162,27 @@ const AdminBlogsNew = () => {
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="title">Title</Label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} type="title" id="title" placeholder="Title" />
+          </div>
+
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="category">Category</Label>
+            <div className='flex gap-10'>
+              <Select value={category} onValueChange={(e) => setCategory(e)} id="category">
+                <SelectTrigger className="w-[280px]">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Choose One</SelectLabel>
+                    {categories.map((category, index) => {
+                      return <SelectItem key={index} value={category}>{category}</SelectItem>;
+                    })}
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {category == "other" && <Input value={otherCategoryValue} onChange={(e) => setOtherCategoryValue(e.target.value)} type="other_value" id="other_value" placeholder="Other Value" />}
+            </div>
           </div>
 
           <div className="grid w-full items-center gap-1.5">
