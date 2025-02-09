@@ -14,7 +14,23 @@ const page = () => {
     const router = useRouter()
 
     useEffect(() => {
-        console.log("Hey! You are a developer, I want to colab with you! In footer write your name, email id and your profession(game,web or whatever)")
+        (async () => {
+            const req = await fetch("/api/checkSession", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            const res = await req.json()
+            if (res.success) {
+                router.push("/dashboard")
+                toast({
+                    title: "🙀 You are already logged in",
+                })
+                return;
+            }
+        })()
     }, [])
 
     const handleSubmit = async (e) => {
