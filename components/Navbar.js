@@ -12,28 +12,36 @@ import {
 } from "@/components/ui/sheet"
 import { ModeToggle } from './ui/mode'
 import { usePathname } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 const Navbar = () => {
   const [logged, setLogged] = useState(false)
   const pathname = usePathname()
+  const { toast } = useToast()
 
   useEffect(() => {
-    const checkSession = async () => {
-      const req = await fetch("/api/checkSession", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-      })
-      const res = await req.json()
-      if (!res.success) {
-        setLogged(false)
-      } else {
-        setLogged(true)
+    try {
+      const checkSession = async () => {
+        const req = await fetch("/api/checkSession", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        })
+        const res = await req.json()
+        if (!res.success) {
+          setLogged(false)
+        } else {
+          setLogged(true)
+        }
       }
+      checkSession()
+    } catch (error) {
+      toast({
+        title: "❌ Server Error.",
+      })
     }
-    checkSession()
   }, [])
 
   if (!logged) {
@@ -55,7 +63,7 @@ const Navbar = () => {
                 <SheetHeader>
                   <SheetTitle>SakshamWithWeb</SheetTitle>
                   <SheetDescription>
-                  <Link href={`/`}>Login</Link>
+                    <Link href={`/`}>Login</Link>
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>

@@ -9,28 +9,34 @@ const Footer = () => {
     const [question, setQuestion] = useState("")
     const [busy, setBusy] = useState(false)
     const { toast } = useToast()
+
     const sendQuestion = async () => {
-        const req1 = await fetch("/api/sendQuestion", {
-            method: "POST",
-            headers: {
-                "Content-Type": "applicaion/json"
-            },
-            body: JSON.stringify({ question: question })
-        })
-        const res1 = await req1.json()
-        if (res1.success) {
-            toast({
-                title: "✅ Sent Successfully",
-                description: "Your message will be read by us.",
+        try {
+            const req1 = await fetch("/api/sendQuestion", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "applicaion/json"
+                },
+                body: JSON.stringify({ question: question })
             })
-            return
-        } else {
+            const res1 = await req1.json()
+            if (res1.success) {
+                toast({
+                    title: "✅ Sent Successfully",
+                    description: "Your message will be read by us.",
+                })
+                return
+            } else {
+                toast({
+                    title: "❌ Something Went Wrong",
+                    description: `Contact us: ${process.env.NEXT_PUBLIC_EMAIl}`,
+                })
+                return
+            }
+        } catch (error) {
             toast({
-                title: "❌ Something Went Wrong",
-                description: `Contact us: ${process.env.NEXT_PUBLIC_EMAIl}`,
+                title: "❌ Server Error.",
             })
-            console.log(res1.error)
-            return
         }
     }
 

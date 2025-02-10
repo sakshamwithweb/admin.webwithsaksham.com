@@ -15,20 +15,26 @@ const page = () => {
 
     useEffect(() => {
         (async () => {
-            const req = await fetch("/api/checkSession", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({})
-            })
-            const res = await req.json()
-            if (res.success) {
-                router.push("/dashboard")
-                toast({
-                    title: "🙀 You are already logged in",
+            try {
+                const req = await fetch("/api/checkSession", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
                 })
-                return;
+                const res = await req.json()
+                if (res.success) {
+                    router.push("/dashboard")
+                    toast({
+                        title: "🙀 You are already logged in",
+                    })
+                    return;
+                }
+            } catch (error) {
+                toast({
+                    title: "❌ Server Error",
+                })
             }
         })()
     }, [])

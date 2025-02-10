@@ -28,7 +28,6 @@ const Page = () => {
     const [validTabs] = useState(['/dashboard', '/blogs', '/queries', '/blogs/new'])
 
     if (!validTabs.includes(pathName)) {
-        console.log(validTabs,pathName)
         return notFound()
     }
 

@@ -1,4 +1,5 @@
 "use client"
+import { useToast } from '@/hooks/use-toast'
 import { CircleX, Edit } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
@@ -7,27 +8,28 @@ const Dashboard = () => {
   const [edit, setEdit] = useState({ mode: false, editTo: "" })
   const [data, setData] = useState(null)
   const [sections] = useState(["about", "knowledge", "project"])
+  const { toast } = useToast()
 
   useEffect(() => {
     (async () => {
-      const req = await fetch(`/api/fetchAdminDetails`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "applicaion/json"
-        },
-        body: JSON.stringify({})
-      })
-      const res = await req.json()
-      setData(res.data)
-      return
+      try {
+        const req = await fetch(`/api/fetchAdminDetails`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "applicaion/json"
+          },
+          body: JSON.stringify({})
+        })
+        const res = await req.json()
+        setData(res.data)
+        return
+      } catch (error) {
+        toast({
+          title: "❌ Server Error.",
+        })
+      }
     })()
   }, [])
-
-  useEffect(() => {
-    if (edit.mode) {
-      console.log(edit)
-    }
-  }, [edit])
 
   if (!data) {
     return <p className='text-center'>Loading..</p>

@@ -11,35 +11,41 @@ const About = ({ about }) => {
     }, [])
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        if (changedData === about) {
+        try {
+            e.preventDefault()
+            if (changedData === about) {
+                toast({
+                    title: "❌ Nothing has been changed.",
+                    description: "Please either cancel editing or change something.",
+                })
+                return;
+            }
+            const req = await fetch(`/api/changeAdminDetails`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "applicaion/json"
+                },
+                body: JSON.stringify({ changedData, section: "about" })
+            })
+            const res = await req.json()
+            if (res.success) {
+                toast({
+                    title: "✔️ Successfully changed",
+                    description: "Your changed data is updated in database",
+                })
+                window.location.reload()
+                return;
+            }
             toast({
                 title: "❌ Nothing has been changed.",
-                description: "Please either cancel editing or change something.",
+                description: "Something went wrong in server.",
             })
             return;
-        }
-        const req = await fetch(`/api/changeAdminDetails`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "applicaion/json"
-            },
-            body: JSON.stringify({ changedData, section: "about" })
-        })
-        const res = await req.json()
-        if (res.success) {
+        } catch (error) {
             toast({
-                title: "✔️ Successfully changed",
-                description: "Your changed data is updated in database",
+                title: "❌ Server error.",
             })
-            window.location.reload()
-            return;
         }
-        toast({
-            title: "❌ Nothing has been changed.",
-            description: "Something went wrong in server.",
-        })
-        return;
     }
 
     if (!changedData) {

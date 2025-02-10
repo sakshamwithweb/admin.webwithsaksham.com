@@ -10,52 +10,64 @@ const Queries = () => {
 
   useEffect(() => {
     (async () => {
-      const req = await fetch(`/api/fetchQuestions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "applicaion/json"
-        },
-        body: JSON.stringify({})
-      })
-      const res = await req.json()
-      if (res.success) {
-        setQueries(res.data)
-        setChangedData(res.data)
-      } else {
+      try {
+        const req = await fetch(`/api/fetchQuestions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "applicaion/json"
+          },
+          body: JSON.stringify({})
+        })
+        const res = await req.json()
+        if (res.success) {
+          setQueries(res.data)
+          setChangedData(res.data)
+        } else {
+          toast({
+            title: "❌ Unable to fetch.",
+            description: "Server error.",
+          })
+        }
+      } catch (error) {
         toast({
-          title: "❌ Unable to fetch.",
-          description: "Server error.",
+          title: "❌ Server Error.",
         })
       }
     })()
   }, [])
 
   const handleClick = async () => {
-    if (changedData == queries) {
-      toast({
-        title: "❌ Nothing has been changed",
-        description: "Please make any changes.",
+    try {
+      if (changedData == queries) {
+        toast({
+          title: "❌ Nothing has been changed",
+          description: "Please make any changes.",
+        })
+        return;
+      }
+      let changedQueries = [];
+      changedData.map((item, index) => {
+        item != queries[index] && changedQueries.push(item._id)
       })
-      return;
-    }
-    let changedQueries = [];
-    changedData.map((item, index) => {
-      item != queries[index] && changedQueries.push(item._id)
-    })
-    const req = await fetch(`/api/resolveQuestions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "applicaion/json"
-      },
-      body: JSON.stringify({ changedQueries: changedQueries })
-    })
-    const res = await req.json()
-    if (res.success) {
-      window.location.reload()
-    } else {
+      const req = await fetch(`/api/resolveQuestions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "applicaion/json"
+        },
+        body: JSON.stringify({ changedQueries: changedQueries })
+      })
+      const res = await req.json()
+      if (res.success) {
+        window.location.reload()
+      } else {
+        toast({
+          title: "❌ Nothing has been changed",
+          description: "Server Error!",
+        })
+      }
+    } catch (error) {
       toast({
-        title: "❌ Nothing has been changed",
-        description: "Server Error!",
+        title: "❌ Server Error.",
       })
     }
   }

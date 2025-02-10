@@ -52,27 +52,31 @@ const AdminBlogsNew = () => {
   const { toast } = useToast()
 
   const handleSubmit = async () => {
-    console.log({ title, content })
-    const publishedTime = new Date().toISOString()
-    const req = await fetch(`/api/newPost`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "applicaion/json"
-      },
-      body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category })
-    })
-    const res = await req.json()
-    if (res.success && res.id) {
-      setId(res.id)
-      console.log(res.id)
-      toast({
-        title: "✅ Successfully Posted!!",
-        description: "You will get your id.",
+    try {
+      const publishedTime = new Date().toISOString()
+      const req = await fetch(`/api/newPost`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "applicaion/json"
+        },
+        body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category })
       })
-    } else {
+      const res = await req.json()
+      if (res.success && res.id) {
+        setId(res.id)
+        toast({
+          title: "✅ Successfully Posted!!",
+          description: "You will get your id.",
+        })
+      } else {
+        toast({
+          title: "❌ Something went wrong",
+          description: "Server error.",
+        })
+      }
+    } catch (error) {
       toast({
-        title: "❌ Something went wrong",
-        description: "Server error.",
+        title: "❌ Server Error.",
       })
     }
   }
@@ -105,21 +109,27 @@ const AdminBlogsNew = () => {
 
   useEffect(() => {
     (async () => {
-      const req = await fetch(`/api/fetchCategories`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "applicaion/json"
-        },
-        body: JSON.stringify({})
-      })
-      const res = await req.json()
-      if (!res.success) {
-        toast({
-          title: "❌ Unable to fetch categories!!"
+      try {
+        const req = await fetch(`/api/fetchCategories`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "applicaion/json"
+          },
+          body: JSON.stringify({})
         })
-        return
+        const res = await req.json()
+        if (!res.success) {
+          toast({
+            title: "❌ Unable to fetch categories!!"
+          })
+          return
+        }
+        setCategories(res.data)
+      } catch (error) {
+        toast({
+          title: "❌ Server Error.",
+        })
       }
-      setCategories(res.data)
     })()
   }, [])
 

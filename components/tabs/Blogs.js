@@ -11,39 +11,51 @@ const Blogs = () => {
 
   useEffect(() => {
     (async () => {
-      const req = await fetch(`/api/fetchBlog`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "applicaion/json"
-        },
-        body: JSON.stringify({})
-      })
-      const res = await req.json()
-      if (res.success) {
-        setBlogsData(res.data)
-      } else {
+      try {
+        const req = await fetch(`/api/fetchBlog`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "applicaion/json"
+          },
+          body: JSON.stringify({})
+        })
+        const res = await req.json()
+        if (res.success) {
+          setBlogsData(res.data)
+        } else {
+          toast({
+            title: "❌ Something Went Wrong",
+            description: "Server Error!!",
+          })
+        }
+      } catch (error) {
         toast({
-          title: "❌ Something Went Wrong",
-          description: "Server Error!!",
+          title: "❌ Server Error.",
         })
       }
     })()
   }, [])
 
   const handledeletePost = async (id) => {
-    const req = await fetch(`/api/deletePost`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "applicaion/json"
-      },
-      body: JSON.stringify({id:id})
-    })
-    const res = await req.json()
-    if (res.success) {
-      toast({ description: `✅ Post Deleted` });
-      window.location.reload()
-    } else {
-      toast({ description: `❌ Something went wrong` });
+    try {
+      const req = await fetch(`/api/deletePost`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "applicaion/json"
+        },
+        body: JSON.stringify({ id: id })
+      })
+      const res = await req.json()
+      if (res.success) {
+        toast({ description: `✅ Post Deleted` });
+        window.location.reload()
+      } else {
+        toast({ description: `❌ Something went wrong` });
+      }
+    } catch (error) {
+      toast({
+        title: "❌ Server Error.",
+      })
     }
   }
 
@@ -57,8 +69,6 @@ const Blogs = () => {
       </div>
     )
   }
-
-  {/*when click at title so redirect to a page where show the blog*/ }
 
   return (
     <div className='relative min-h-screen'>
@@ -79,11 +89,11 @@ const Blogs = () => {
                       navigator.clipboard.writeText(`https://blog.webwithsaksham.com/${item.id}`).then(() => {
                         toast({ description: `✅ Copied` });
                       })
-                      .catch(() => {
-                        toast({ description: `❌ Something went wrong` });
-                      });
+                        .catch(() => {
+                          toast({ description: `❌ Something went wrong` });
+                        });
                     }}>Save Link<Link2Icon /></DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => { handledeletePost(item.id)}}>Delete Post<Trash /></DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => { handledeletePost(item.id) }}>Delete Post<Trash /></DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
