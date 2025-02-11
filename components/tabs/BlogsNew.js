@@ -49,10 +49,12 @@ const AdminBlogsNew = () => {
   const [category, setCategory] = useState("other")
   const [categories, setCategories] = useState([])
   const [otherCategoryValue, setOtherCategoryValue] = useState("")
+  const [wait,setWait] = useState(false)
   const { toast } = useToast()
 
   const handleSubmit = async () => {
     try {
+      setWait(true)
       const publishedTime = new Date().toISOString()
       const req = await fetch(`/api/newPost`, {
         method: "POST",
@@ -63,12 +65,14 @@ const AdminBlogsNew = () => {
       })
       const res = await req.json()
       if (res.success && res.id) {
+        setWait(false)
         setId(res.id)
         toast({
           title: "✅ Successfully Posted!!",
           description: "You will get your id.",
         })
       } else {
+        setWait(false)
         toast({
           title: "❌ Something went wrong",
           description: "Server error.",
@@ -206,7 +210,7 @@ const AdminBlogsNew = () => {
             />
           </div>
 
-          <Button onClick={handleSubmit} className="mx-auto w-11/12">Post</Button>
+          <Button disabled={wait} onClick={handleSubmit} className="mx-auto w-11/12">Post</Button>
         </>
       )}
 

@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react'
 const About = ({ about }) => {
     const [changedData, setChangedData] = useState(null)
     const { toast } = useToast()
+    const [wait, setWait] = useState(false)
+    
     useEffect(() => {
         setChangedData(about)
     }, [])
@@ -20,6 +22,7 @@ const About = ({ about }) => {
                 })
                 return;
             }
+            setWait(true)
             const req = await fetch(`/api/changeAdminDetails`, {
                 method: "POST",
                 headers: {
@@ -29,6 +32,7 @@ const About = ({ about }) => {
             })
             const res = await req.json()
             if (res.success) {
+                setWait(false)
                 toast({
                     title: "✔️ Successfully changed",
                     description: "Your changed data is updated in database",
@@ -36,6 +40,7 @@ const About = ({ about }) => {
                 window.location.reload()
                 return;
             }
+            setWait(false)
             toast({
                 title: "❌ Nothing has been changed.",
                 description: "Something went wrong in server.",
@@ -63,7 +68,7 @@ const About = ({ about }) => {
                             <Input value={value} onChange={(e) => setChangedData((prev) => ({ ...prev, [key]: e.target.value, }))} />
                         </div>
                     ))}
-                    <Button onClick={handleSubmit}>Save</Button>
+                    <Button disabled={wait} onClick={handleSubmit}>Save</Button>
                 </form>
             </div>
         </div>

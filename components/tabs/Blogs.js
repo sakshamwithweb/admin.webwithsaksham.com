@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 
 const Blogs = () => {
   const [blogsData, setBlogsData] = useState(null)
+  const [wait, setWait] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -38,19 +39,24 @@ const Blogs = () => {
 
   const handledeletePost = async (id) => {
     try {
-      const req = await fetch(`/api/deletePost`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "applicaion/json"
-        },
-        body: JSON.stringify({ id: id })
-      })
-      const res = await req.json()
-      if (res.success) {
-        toast({ description: `✅ Post Deleted` });
-        window.location.reload()
-      } else {
-        toast({ description: `❌ Something went wrong` });
+      if (!wait) {
+        setWait(true)
+        const req = await fetch(`/api/deletePost`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "applicaion/json"
+          },
+          body: JSON.stringify({ id: id })
+        })
+        const res = await req.json()
+        if (res.success) {
+          setWait(false)
+          toast({ description: `✅ Post Deleted` });
+          window.location.reload()
+        } else {
+          setWait(false)
+          toast({ description: `❌ Something went wrong` });
+        }
       }
     } catch (error) {
       toast({

@@ -6,6 +6,7 @@ import { Trash } from 'lucide-react'
 
 const Knowledge = ({ knowledge }) => {
     const [changedData, setChangedData] = useState(null)
+    const [wait, setWait] = useState(false)
     const { toast } = useToast()
 
     useEffect(() => {
@@ -22,6 +23,7 @@ const Knowledge = ({ knowledge }) => {
                 })
                 return;
             }
+            setWait(true)
             const req = await fetch(`/api/changeAdminDetails`, {
                 method: "POST",
                 headers: {
@@ -31,6 +33,7 @@ const Knowledge = ({ knowledge }) => {
             })
             const res = await req.json()
             if (res.success) {
+                setWait(false)
                 toast({
                     title: "✔️ Successfully changed",
                     description: "Your changed data is updated in database",
@@ -38,6 +41,7 @@ const Knowledge = ({ knowledge }) => {
                 window.location.reload()
                 return;
             }
+            setWait(false)
             toast({
                 title: "❌ Nothing has been changed.",
                 description: "Something went wrong in server.",
@@ -94,7 +98,7 @@ const Knowledge = ({ knowledge }) => {
                         e.preventDefault()
                         setChangedData([...changedData, { "skill": "SkillName", "percentage": 0 }])
                     }}>Add More</Button>
-                    <Button onClick={handleSubmit}>Save</Button>
+                    <Button disabled={wait} onClick={handleSubmit}>Save</Button>
                 </div>
             </form>
         </div>

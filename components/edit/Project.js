@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 const Project = ({ project }) => {
     const [changedData, setChangedData] = useState(null)
     const { toast } = useToast()
+    const [wait, setWait] = useState(false)
     const [focusedInput, setFocusedInput] = useState(null)
 
     useEffect(() => {
@@ -23,6 +24,7 @@ const Project = ({ project }) => {
                 })
                 return;
             }
+            setWait(true)
             const req = await fetch(`/api/changeAdminDetails`, {
                 method: "POST",
                 headers: {
@@ -32,6 +34,7 @@ const Project = ({ project }) => {
             })
             const res = await req.json()
             if (res.success) {
+                setWait(false)
                 toast({
                     title: "✔️ Successfully changed",
                     description: "Your changed data is updated in database",
@@ -39,6 +42,7 @@ const Project = ({ project }) => {
                 window.location.reload()
                 return;
             }
+            setWait(false)
             toast({
                 title: "❌ Nothing has been changed.",
                 description: "Something went wrong in server.",
@@ -102,7 +106,7 @@ const Project = ({ project }) => {
                         e.preventDefault()
                         setChangedData([...changedData, { "title": "Project Name", "Made_With": "Technology used", "Repositry": "https://github.com/sakshamwithweb", "Description": "Sample Project" }])
                     }}>Add More</Button>
-                    <Button onClick={handleSubmit}>Save</Button>
+                    <Button disabled={wait} onClick={handleSubmit}>Save</Button>
                 </div>
             </form>
         </div>

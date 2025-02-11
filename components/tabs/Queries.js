@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 const Queries = () => {
   const [queries, setQueries] = useState(null)
   const [changedData, setChangedData] = useState(null)
+  const [wait,setWait] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const Queries = () => {
         })
         return;
       }
+      setWait(true)
       let changedQueries = [];
       changedData.map((item, index) => {
         item != queries[index] && changedQueries.push(item._id)
@@ -58,8 +60,10 @@ const Queries = () => {
       })
       const res = await req.json()
       if (res.success) {
+        setWait(false)
         window.location.reload()
       } else {
+        setWait(false)
         toast({
           title: "❌ Nothing has been changed",
           description: "Server Error!",
@@ -100,7 +104,7 @@ const Queries = () => {
           </div>
         )
       })}
-      <Button onClick={handleClick}>Save</Button>
+      <Button disabled={wait} onClick={handleClick}>Save</Button>
     </div>
   )
 }
