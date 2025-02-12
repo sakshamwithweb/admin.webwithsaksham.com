@@ -47,7 +47,7 @@ const page = () => {
             setWait(true)
             if (userName.length == 0 || pass.length == 0) {
                 toast({
-                    title: "🙀 All table is madetory",
+                    title: "🙀 All table is mandatory",
                     description: "Please fill all the fields.",
                 })
                 setWait(false)

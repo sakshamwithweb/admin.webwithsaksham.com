@@ -44,7 +44,7 @@ const Footer = () => {
     const handleSubmit = async () => {
         if (question.trim() == 0) {
             toast({
-                title: "✍️ All fields are madetory",
+                title: "✍️ All fields are mandatory",
                 description: `Please complete all field..`,
             })
             return
