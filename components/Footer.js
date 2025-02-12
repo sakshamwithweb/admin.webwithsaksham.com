@@ -29,13 +29,14 @@ const Footer = () => {
             } else {
                 toast({
                     title: "❌ Something Went Wrong",
-                    description: `Contact us: ${process.env.NEXT_PUBLIC_EMAIl}`,
+                    description: `Write your issue in footer!`,
                 })
                 return
             }
         } catch (error) {
             toast({
-                title: "❌ Server Error.",
+                title: "❌ Something Went Wrong",
+                description: `Write your issue in footer!`,
             })
         }
     }
@@ -43,8 +44,8 @@ const Footer = () => {
     const handleSubmit = async () => {
         if (question.trim() == 0) {
             toast({
-                title: "✍️ Write Something",
-                description: `Your input is empty..`,
+                title: "✍️ All fields are madetory",
+                description: `Please complete all field..`,
             })
             return
         }

@@ -26,13 +26,14 @@ const Blogs = () => {
         } else {
           toast({
             title: "❌ Something Went Wrong",
-            description: "Server Error!!",
-          })
+            description: `Write your issue in footer!`,
+        })
         }
       } catch (error) {
         toast({
-          title: "❌ Server Error.",
-        })
+          title: "❌ Something Went Wrong",
+          description: `Write your issue in footer!`,
+      })
       }
     })()
   }, [])
@@ -51,17 +52,21 @@ const Blogs = () => {
         const res = await req.json()
         if (res.success) {
           setWait(false)
-          toast({ description: `✅ Post Deleted` });
+          toast({ title: `✅ Post Deleted` });
           window.location.reload()
         } else {
           setWait(false)
-          toast({ description: `❌ Something went wrong` });
+          toast({
+            title: "❌ Something Went Wrong",
+            description: `Write your issue in footer!`,
+        })
         }
       }
     } catch (error) {
       toast({
-        title: "❌ Server Error.",
-      })
+        title: "❌ Something Went Wrong",
+        description: `Write your issue in footer!`,
+    })
     }
   }
 
@@ -93,10 +98,13 @@ const Blogs = () => {
                   <DropdownMenuContent>
                     <DropdownMenuItem onClick={() => {
                       navigator.clipboard.writeText(`https://blog.webwithsaksham.com/${item.id}`).then(() => {
-                        toast({ description: `✅ Copied` });
+                        toast({ title: `✅ Copied` });
                       })
                         .catch(() => {
-                          toast({ description: `❌ Something went wrong` });
+                          toast({
+                            title: "❌ Something Went Wrong",
+                            description: `Write your issue in footer!`,
+                        })
                         });
                     }}>Save Link<Link2Icon /></DropdownMenuItem>
                     <DropdownMenuItem onClick={() => { handledeletePost(item.id) }}>Delete Post<Trash /></DropdownMenuItem>

@@ -25,14 +25,15 @@ const Queries = () => {
           setChangedData(res.data)
         } else {
           toast({
-            title: "❌ Unable to fetch.",
-            description: "Server error.",
-          })
+            title: "❌ Something Went Wrong, Unable to fetch!",
+            description: `Write your issue in footer!`,
+        })
         }
       } catch (error) {
         toast({
-          title: "❌ Server Error.",
-        })
+          title: "❌ Something Went Wrong",
+          description: `Write your issue in footer!`,
+      })
       }
     })()
   }, [])
@@ -71,8 +72,9 @@ const Queries = () => {
       }
     } catch (error) {
       toast({
-        title: "❌ Server Error.",
-      })
+        title: "❌ Something Went Wrong",
+        description: `Write your issue in footer!`,
+    })
     }
   }
 

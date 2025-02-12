@@ -48,7 +48,8 @@ const About = ({ about }) => {
             return;
         } catch (error) {
             toast({
-                title: "❌ Server error.",
+                title: "❌ Something Went Wrong",
+                description: `Write your issue in footer!`,
             })
         }
     }

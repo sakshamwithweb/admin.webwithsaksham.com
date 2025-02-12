@@ -53,8 +53,8 @@ const Page = () => {
                 const res = await req.json()
                 if (!res.success) {
                     toast({
-                        title: "❌ Something Went Wrong",
-                        description: "You are logged out",
+                        title: "❌ Something Went Wrong! You are logged out",
+                        description: `Write your issue in footer!`,
                     })
                     router.push("/")
                 } else {
@@ -62,8 +62,8 @@ const Page = () => {
                 }
             } catch (error) {
                 toast({
-                    title: "❌ Error",
-                    description: "Failed to check session",
+                    title: "❌ Something Went Wrong! Failed to check session.",
+                    description: `Write your issue in footer!`,
                 })
                 router.push("/")
             }

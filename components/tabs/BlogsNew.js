@@ -74,14 +74,15 @@ const AdminBlogsNew = () => {
       } else {
         setWait(false)
         toast({
-          title: "❌ Something went wrong",
-          description: "Server error.",
-        })
+          title: "❌ Something Went Wrong",
+          description: `Write your issue in footer!`,
+      })
       }
     } catch (error) {
       toast({
-        title: "❌ Server Error.",
-      })
+        title: "❌ Something Went Wrong",
+        description: `Write your issue in footer!`,
+    })
     }
   }
 
@@ -124,15 +125,17 @@ const AdminBlogsNew = () => {
         const res = await req.json()
         if (!res.success) {
           toast({
-            title: "❌ Unable to fetch categories!!"
-          })
+            title: "❌ Something Went Wrong, Unable to fetch categories!",
+            description: `Write your issue in footer!`,
+        })
           return
         }
         setCategories(res.data)
       } catch (error) {
         toast({
-          title: "❌ Server Error.",
-        })
+          title: "❌ Something Went Wrong",
+          description: `Write your issue in footer!`,
+      })
       }
     })()
   }, [])

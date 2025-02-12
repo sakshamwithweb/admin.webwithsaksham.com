@@ -49,7 +49,8 @@ const Knowledge = ({ knowledge }) => {
             return;
         } catch (error) {
             toast({
-                title: "❌ Server Error.",
+                title: "❌ Something Went Wrong",
+                description: `Write your issue in footer!`,
             })
         }
     }

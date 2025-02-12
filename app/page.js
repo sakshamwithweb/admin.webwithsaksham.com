@@ -28,12 +28,14 @@ const page = () => {
                     router.push("/dashboard")
                     toast({
                         title: "🙀 You are already logged in",
+                        description: "Couldn't register anymore"
                     })
                     return;
                 }
             } catch (error) {
                 toast({
-                    title: "❌ Server Error",
+                    title: "❌ Something Went Wrong",
+                    description: `Write your issue in footer!`,
                 })
             }
         })()
@@ -68,7 +70,7 @@ const page = () => {
             } else {
                 toast({
                     title: "❌ Something Went Wrong",
-                    description: res1.error,
+                    description: `Write your issue in footer!`,
                 })
             }
             setWait(false)
@@ -77,7 +79,7 @@ const page = () => {
         } catch (error) {
             toast({
                 title: "❌ Something Went Wrong",
-                description: "Server error",
+                description: `Write your issue in footer!`,
             })
         }
     }
