@@ -24,7 +24,7 @@ const page = () => {
                     body: JSON.stringify({})
                 })
                 if (!req.ok) {
-                    throw new Error("Error during checking user session!");
+                    throw new Error("Error while checking user session!");
                 }
                 const res = await req.json()
                 if (res.success) {
@@ -63,7 +63,7 @@ const page = () => {
                 body: JSON.stringify({ userName, pass })
             })
             if (!req1.ok) {
-                throw new Error("Error during logging admin!");
+                throw new Error("Error while logging admin!");
             }
             const res1 = await req1.json()
             if (res1.success) {
@@ -73,7 +73,7 @@ const page = () => {
                 })
                 router.push("/dashboard")
             } else {
-                throw new Error("Error during logging admin!");
+                throw new Error("Error while logging admin!");
             }
             setWait(false)
             setUserName("")

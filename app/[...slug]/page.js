@@ -51,7 +51,7 @@ const Page = () => {
                     body: JSON.stringify({})
                 })
                 if (!req.ok) {
-                    throw new Error("Error during checking user session!");
+                    throw new Error("Error while checking user session!");
                 }
                 const res = await req.json()
                 if (res.success) {

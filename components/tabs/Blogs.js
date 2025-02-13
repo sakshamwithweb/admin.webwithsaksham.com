@@ -21,13 +21,13 @@ const Blogs = () => {
           body: JSON.stringify({})
         })
         if (!req.ok) {
-          throw new Error("Error during fetching Blogs!");
+          throw new Error("Error while fetching Blogs!");
         }
         const res = await req.json()
         if (res.success) {
           setBlogsData(res.data)
         } else {
-          throw new Error("Error during fetching Blogs!");
+          throw new Error("Error while fetching Blogs!");
         }
       } catch (error) {
         toast({
@@ -50,7 +50,7 @@ const Blogs = () => {
           body: JSON.stringify({ id: id })
         })
         if (!req.ok) {
-          throw new Error("Error during deleting post!");
+          throw new Error("Error while deleting post!");
         }
         const res = await req.json()
         setWait(false)
@@ -58,7 +58,7 @@ const Blogs = () => {
           toast({ title: `✅ Post Deleted` });
           window.location.reload()
         } else {
-          throw new Error("Error during deleting post!");
+          throw new Error("Error while deleting post!");
         }
       }
     } catch (error) {

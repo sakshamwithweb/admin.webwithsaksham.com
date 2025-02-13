@@ -64,7 +64,7 @@ const AdminBlogsNew = () => {
         body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category })
       })
       if (!req.ok) {
-        throw new Error("Error during creating new post!");
+        throw new Error("Error while creating new post!");
       }
       const res = await req.json()
       setWait(false)
@@ -75,7 +75,7 @@ const AdminBlogsNew = () => {
           description: "You will get your id.",
         })
       } else {
-        throw new Error("Error during creating new post!");
+        throw new Error("Error while creating new post!");
       }
     } catch (error) {
       toast({

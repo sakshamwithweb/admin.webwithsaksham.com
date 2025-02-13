@@ -32,7 +32,7 @@ const Knowledge = ({ knowledge }) => {
                 body: JSON.stringify({ changedData, section: "knowledge" })
             })
             if (!req.ok) {
-                throw new Error("Error during changing Admin details!");
+                throw new Error("Error while changing Admin details!");
             }
             const res = await req.json()
             setWait(false)
@@ -43,7 +43,7 @@ const Knowledge = ({ knowledge }) => {
                 })
                 window.location.reload()
             } else {
-                throw new Error("Error during changing Admin details!");
+                throw new Error("Error while changing Admin details!");
             }
         } catch (error) {
             toast({
