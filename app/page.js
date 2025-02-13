@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from "@/components/ui/label"
 import React, { useEffect, useState } from 'react'
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from 'next/navigation'
+import { notFound, useRouter } from 'next/navigation'
 
 const page = () => {
     const [userName, setUserName] = useState("")
@@ -39,6 +39,7 @@ const page = () => {
                     title: `❌ ${error.message}`,
                     description: `Write your issue in footer!`,
                 })
+                notFound()
             }
         })()
     }, [])
