@@ -16,18 +16,24 @@ const Dashboard = () => {
         const req = await fetch(`/api/fetchAdminDetails`, {
           method: "POST",
           headers: {
-            "Content-Type": "applicaion/json"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({})
         })
+        if (!req.ok) {
+          throw new Error("Error during fetching details!");
+        }
         const res = await req.json()
-        setData(res.data)
-        return
+        if (res.success) {
+          setData(res.data)
+        } else {
+          throw new Error("Error during fetching details!");
+        }
       } catch (error) {
         toast({
-          title: "❌ Something Went Wrong",
+          title: `❌ ${error.message}`,
           description: `Write your issue in footer!`,
-      })
+        })
       }
     })()
   }, [])

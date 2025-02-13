@@ -27,29 +27,27 @@ const Knowledge = ({ knowledge }) => {
             const req = await fetch(`/api/changeAdminDetails`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "applicaion/json"
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ changedData, section: "knowledge" })
             })
+            if (!req.ok) {
+                throw new Error("Error during changing Admin details!");
+            }
             const res = await req.json()
+            setWait(false)
             if (res.success) {
-                setWait(false)
                 toast({
                     title: "✔️ Successfully changed",
                     description: "Your changed data is updated in database",
                 })
                 window.location.reload()
-                return;
+            } else {
+                throw new Error("Error during changing Admin details!");
             }
-            setWait(false)
-            toast({
-                title: "❌ Nothing has been changed.",
-                description: "Something went wrong in server.",
-            })
-            return;
         } catch (error) {
             toast({
-                title: "❌ Something Went Wrong",
+                title: `❌ ${error.message}`,
                 description: `Write your issue in footer!`,
             })
         }

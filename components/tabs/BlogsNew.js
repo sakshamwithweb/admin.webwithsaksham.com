@@ -49,7 +49,7 @@ const AdminBlogsNew = () => {
   const [category, setCategory] = useState("other")
   const [categories, setCategories] = useState([])
   const [otherCategoryValue, setOtherCategoryValue] = useState("")
-  const [wait,setWait] = useState(false)
+  const [wait, setWait] = useState(false)
   const { toast } = useToast()
 
   const handleSubmit = async () => {
@@ -59,30 +59,29 @@ const AdminBlogsNew = () => {
       const req = await fetch(`/api/newPost`, {
         method: "POST",
         headers: {
-          "Content-Type": "applicaion/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category })
       })
+      if (!req.ok) {
+        throw new Error("Error during creating new post!");
+      }
       const res = await req.json()
+      setWait(false)
       if (res.success && res.id) {
-        setWait(false)
         setId(res.id)
         toast({
           title: "✅ Successfully Posted!!",
           description: "You will get your id.",
         })
       } else {
-        setWait(false)
-        toast({
-          title: "❌ Something Went Wrong",
-          description: `Write your issue in footer!`,
-      })
+        throw new Error("Error during creating new post!");
       }
     } catch (error) {
       toast({
-        title: "❌ Something Went Wrong",
+        title: `❌ ${error.message}`,
         description: `Write your issue in footer!`,
-    })
+      })
     }
   }
 
@@ -118,24 +117,24 @@ const AdminBlogsNew = () => {
         const req = await fetch(`/api/fetchCategories`, {
           method: "POST",
           headers: {
-            "Content-Type": "applicaion/json"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({})
         })
-        const res = await req.json()
-        if (!res.success) {
-          toast({
-            title: "❌ Something Went Wrong, Unable to fetch categories!",
-            description: `Write your issue in footer!`,
-        })
-          return
+        if (!req.ok) {
+          throw new Error("Unable to fetch categories!");
         }
-        setCategories(res.data)
+        const res = await req.json()
+        if (res.success) {
+          setCategories(res.data)
+        } else {
+          throw new Error("Unable to fetch categories!");
+        }
       } catch (error) {
         toast({
-          title: "❌ Something Went Wrong",
+          title: `❌ ${error.message}`,
           description: `Write your issue in footer!`,
-      })
+        })
       }
     })()
   }, [])

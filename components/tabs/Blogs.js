@@ -16,24 +16,24 @@ const Blogs = () => {
         const req = await fetch(`/api/fetchBlog`, {
           method: "POST",
           headers: {
-            "Content-Type": "applicaion/json"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({})
         })
+        if (!req.ok) {
+          throw new Error("Error during fetching Blogs!");
+        }
         const res = await req.json()
         if (res.success) {
           setBlogsData(res.data)
         } else {
-          toast({
-            title: "❌ Something Went Wrong",
-            description: `Write your issue in footer!`,
-        })
+          throw new Error("Error during fetching Blogs!");
         }
       } catch (error) {
         toast({
-          title: "❌ Something Went Wrong",
+          title: `❌ ${error.message}`,
           description: `Write your issue in footer!`,
-      })
+        })
       }
     })()
   }, [])
@@ -45,28 +45,27 @@ const Blogs = () => {
         const req = await fetch(`/api/deletePost`, {
           method: "POST",
           headers: {
-            "Content-Type": "applicaion/json"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({ id: id })
         })
+        if (!req.ok) {
+          throw new Error("Error during deleting post!");
+        }
         const res = await req.json()
+        setWait(false)
         if (res.success) {
-          setWait(false)
           toast({ title: `✅ Post Deleted` });
           window.location.reload()
         } else {
-          setWait(false)
-          toast({
-            title: "❌ Something Went Wrong",
-            description: `Write your issue in footer!`,
-        })
+          throw new Error("Error during deleting post!");
         }
       }
     } catch (error) {
       toast({
-        title: "❌ Something Went Wrong",
+        title: `❌ ${error.message}`,
         description: `Write your issue in footer!`,
-    })
+      })
     }
   }
 
@@ -104,7 +103,7 @@ const Blogs = () => {
                           toast({
                             title: "❌ Something Went Wrong",
                             description: `Write your issue in footer!`,
-                        })
+                          })
                         });
                     }}>Save Link<Link2Icon /></DropdownMenuItem>
                     <DropdownMenuItem onClick={() => { handledeletePost(item.id) }}>Delete Post<Trash /></DropdownMenuItem>

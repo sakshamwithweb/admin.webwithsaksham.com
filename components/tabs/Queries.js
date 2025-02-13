@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 const Queries = () => {
   const [queries, setQueries] = useState(null)
   const [changedData, setChangedData] = useState(null)
-  const [wait,setWait] = useState(false)
+  const [wait, setWait] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -15,25 +15,25 @@ const Queries = () => {
         const req = await fetch(`/api/fetchQuestions`, {
           method: "POST",
           headers: {
-            "Content-Type": "applicaion/json"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({})
         })
+        if (!req.ok) {
+          throw new Error("Unable to fetch Questions!");
+        }
         const res = await req.json()
         if (res.success) {
           setQueries(res.data)
           setChangedData(res.data)
         } else {
-          toast({
-            title: "❌ Something Went Wrong, Unable to fetch!",
-            description: `Write your issue in footer!`,
-        })
+          throw new Error("Unable to fetch Questions!");
         }
       } catch (error) {
         toast({
-          title: "❌ Something Went Wrong",
+          title: `❌ ${error.message}`,
           description: `Write your issue in footer!`,
-      })
+        })
       }
     })()
   }, [])
@@ -55,26 +55,22 @@ const Queries = () => {
       const req = await fetch(`/api/resolveQuestions`, {
         method: "POST",
         headers: {
-          "Content-Type": "applicaion/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ changedQueries: changedQueries })
       })
       const res = await req.json()
+      setWait(false)
       if (res.success) {
-        setWait(false)
         window.location.reload()
       } else {
-        setWait(false)
-        toast({
-          title: "❌ Nothing has been changed",
-          description: "Server Error!",
-        })
+        throw new Error("Unable to change!");
       }
     } catch (error) {
       toast({
-        title: "❌ Something Went Wrong",
+        title: `❌ ${error.message}`,
         description: `Write your issue in footer!`,
-    })
+      })
     }
   }
 

@@ -29,19 +29,22 @@ const Navbar = () => {
           },
           body: JSON.stringify({})
         })
+        if (!req.ok) {
+          throw new Error("Error during checking user session!");
+        }
         const res = await req.json()
-        if (!res.success) {
-          setLogged(false)
-        } else {
+        if (res.success) {
           setLogged(true)
+        } else {
+          setLogged(false)
         }
       }
       checkSession()
     } catch (error) {
       toast({
-        title: "❌ Something Went Wrong",
+        title: `❌ ${error.message}`,
         description: `Write your issue in footer!`,
-    })
+      })
     }
   }, [])
 

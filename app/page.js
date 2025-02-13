@@ -23,6 +23,9 @@ const page = () => {
                     },
                     body: JSON.stringify({})
                 })
+                if (!req.ok) {
+                    throw new Error("Error during checking user session!");
+                }
                 const res = await req.json()
                 if (res.success) {
                     router.push("/dashboard")
@@ -30,11 +33,10 @@ const page = () => {
                         title: "🙀 You are already logged in",
                         description: "Couldn't register anymore"
                     })
-                    return;
                 }
             } catch (error) {
                 toast({
-                    title: "❌ Something Went Wrong",
+                    title: `❌ ${error.message}`,
                     description: `Write your issue in footer!`,
                 })
             }
@@ -56,10 +58,13 @@ const page = () => {
             const req1 = await fetch(`/api/adminLogin`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "applicaion/json"
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ userName, pass })
             })
+            if (!req1.ok) {
+                throw new Error("Error during logging admin!");
+            }
             const res1 = await req1.json()
             if (res1.success) {
                 toast({
@@ -68,17 +73,14 @@ const page = () => {
                 })
                 router.push("/dashboard")
             } else {
-                toast({
-                    title: "❌ Something Went Wrong",
-                    description: `Write your issue in footer!`,
-                })
+                throw new Error("Error during logging admin!");
             }
             setWait(false)
             setUserName("")
             setPass("")
         } catch (error) {
             toast({
-                title: "❌ Something Went Wrong",
+                title: `❌ ${error.message}`,
                 description: `Write your issue in footer!`,
             })
         }

@@ -8,16 +8,16 @@ import { notFound, usePathname, useRouter } from 'next/navigation'
 const componentCache = new Map()
 
 const getDynamicComponent = (compName) => {
-  if (!componentCache.has(compName)) {
-    componentCache.set(
-      compName,
-      dynamic(() => import(`@/components/tabs/${compName}.js`), {
-        ssr: false,
-        loading: () => <div>Loading component...</div>
-      })
-    )
-  }
-  return componentCache.get(compName)
+    if (!componentCache.has(compName)) {
+        componentCache.set(
+            compName,
+            dynamic(() => import(`@/components/tabs/${compName}.js`), {
+                ssr: false,
+                loading: () => <div>Loading component...</div>
+            })
+        )
+    }
+    return componentCache.get(compName)
 }
 
 const Page = () => {
@@ -50,19 +50,18 @@ const Page = () => {
                     },
                     body: JSON.stringify({})
                 })
+                if (!req.ok) {
+                    throw new Error("Error during checking user session!");
+                }
                 const res = await req.json()
-                if (!res.success) {
-                    toast({
-                        title: "❌ Something Went Wrong! You are logged out",
-                        description: `Write your issue in footer!`,
-                    })
-                    router.push("/")
-                } else {
+                if (res.success) {
                     setLogged(true)
+                } else {
+                    throw new Error("Something Went Wrong! You are logged out");
                 }
             } catch (error) {
                 toast({
-                    title: "❌ Something Went Wrong! Failed to check session.",
+                    title: `❌ ${error.message}`,
                     description: `Write your issue in footer!`,
                 })
                 router.push("/")
