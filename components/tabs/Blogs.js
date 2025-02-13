@@ -21,7 +21,7 @@ const Blogs = () => {
           body: JSON.stringify({})
         })
         if (!req.ok) {
-          throw new Error("Error while fetching Blogs!");
+          throw new Error(`Error ${req.status}: ${req.statusText}`);
         }
         const res = await req.json()
         if (res.success) {
@@ -50,7 +50,7 @@ const Blogs = () => {
           body: JSON.stringify({ id: id })
         })
         if (!req.ok) {
-          throw new Error("Error while deleting post!");
+          throw new Error(`Error ${req.status}: ${req.statusText}`);
         }
         const res = await req.json()
         setWait(false)

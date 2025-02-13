@@ -20,7 +20,7 @@ const Queries = () => {
           body: JSON.stringify({})
         })
         if (!req.ok) {
-          throw new Error("Unable to fetch Questions!");
+          throw new Error(`Error ${req.status}: ${req.statusText}`);
         }
         const res = await req.json()
         if (res.success) {

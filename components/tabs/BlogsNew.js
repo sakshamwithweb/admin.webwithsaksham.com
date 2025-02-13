@@ -64,7 +64,7 @@ const AdminBlogsNew = () => {
         body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category })
       })
       if (!req.ok) {
-        throw new Error("Error while creating new post!");
+        throw new Error(`Error ${req.status}: ${req.statusText}`);
       }
       const res = await req.json()
       setWait(false)
@@ -122,7 +122,7 @@ const AdminBlogsNew = () => {
           body: JSON.stringify({})
         })
         if (!req.ok) {
-          throw new Error("Unable to fetch categories!");
+          throw new Error(`Error ${req.status}: ${req.statusText}`);
         }
         const res = await req.json()
         if (res.success) {

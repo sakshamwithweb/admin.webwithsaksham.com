@@ -33,7 +33,7 @@ const Project = ({ project }) => {
                 body: JSON.stringify({ changedData, section: "project" })
             })
             if (!req.ok) {
-                throw new Error("Error while changing Admin details!");
+                throw new Error(`Error ${req.status}: ${req.statusText}`);
             }
             const res = await req.json()
             setWait(false)

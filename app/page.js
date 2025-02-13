@@ -24,7 +24,7 @@ const page = () => {
                     body: JSON.stringify({})
                 })
                 if (!req.ok) {
-                    throw new Error("Error while checking user session!");
+                    throw new Error(`Error ${req.status}: ${req.statusText}`);
                 }
                 const res = await req.json()
                 if (res.success) {
@@ -64,7 +64,7 @@ const page = () => {
                 body: JSON.stringify({ userName, pass })
             })
             if (!req1.ok) {
-                throw new Error("Error while logging admin!");
+                throw new Error(`Error ${req1.status}: ${req1.statusText}`);
             }
             const res1 = await req1.json()
             if (res1.success) {
