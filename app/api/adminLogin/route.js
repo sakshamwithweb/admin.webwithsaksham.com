@@ -21,6 +21,7 @@ export async function POST(req) {
         const isAllowed = await rateLimit(req);
         if (!isAllowed) return NextResponse.json({ success: false, error: "Too many requests, try 5 minutes later" });
         const { userName, pass } = await req.json()
+        if (!userName || !pass || userName?.length == 0 || pass?.length == 0) throw new Error("something is wrong");
         await connectDb()
         const admin = await Admin.findOne({ userName: userName })
         if (!admin) return NextResponse.json({ success: false, error: "Wrong credentials" })

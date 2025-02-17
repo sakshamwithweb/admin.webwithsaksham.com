@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 export async function POST(params) {
     try {
         const { question } = await params.json();
+        if (!question || question?.length == 0) throw new Error("something is wrong");
         await connectDb()
         const newQ = new Question({
             question: question

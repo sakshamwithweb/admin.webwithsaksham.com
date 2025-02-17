@@ -8,6 +8,7 @@ import uuid4 from "uuid4"
 export async function POST(req) {
     try {
         const { title, content, publishedTime, categoryValue } = await req.json()
+        if (!title || !content || !publishedTime || !categoryValue || title?.length == 0 || content?.length == 0 || publishedTime?.length == 0 || categoryValue?.length == 0) throw new Error("something is wrong");
         await connectDb()
         const id = uuid4()
         const post = new Post({

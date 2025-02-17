@@ -5,6 +5,7 @@ import { NextResponse } from "next/server"
 export async function POST(req) {
     try {
         const { section, changedData } = await req.json()
+        if (!section || !changedData) throw new Error("something is wrong");
         await connectDb()
         const changes = await AdminDetails.findOneAndUpdate({ name: "Saksham" }, { [section]: changedData })
         return NextResponse.json({ success: true })
