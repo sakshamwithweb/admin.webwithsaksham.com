@@ -14,7 +14,7 @@ export async function POST(req) {
         await connectDb()
 
         // check valid
-        const isValid = await Session.findOne({ id: sessionId.value })
+        const isValid = await Session.findOne({ _id: sessionId.value })
         if (!isValid) return NextResponse.json({ success: false })
 
         if (isValid?.ipAddress !== ipAddress || isValid?.userAgent !== userAgent) {

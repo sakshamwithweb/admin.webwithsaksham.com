@@ -4,7 +4,6 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcrypt"
 import { rateLimit } from "@/lib/rateLimit";
 import { Session } from "@/lib/models/session";
-import uuid4 from "uuid4";
 
 async function CheckHashPass(userPass, hashPass) {
     try {
@@ -34,13 +33,12 @@ export async function POST(req) {
         // Get session and return session
         const ipAddress = req.headers.get("x-forwarded-for") || req.connection.remoteAddress || "Unknown IP";
         const userAgent = req.headers.get("user-agent") || "Unknown User Agent";
-        const sessionId = uuid4()
         const newSession = new Session({
-            id: sessionId,
             ipAddress: ipAddress,
             userAgent: userAgent,
         })
-        await newSession.save()
+        const result = await newSession.save()
+        const sessionId = result._id.toString()
 
         // set the session in cookies section
         const response = NextResponse.json({ success: true });
@@ -53,6 +51,7 @@ export async function POST(req) {
 
         return response;
     } catch (error) {
+        console.log(error.message)
         return NextResponse.json({ success: false, error: `Server error, contact:${process.env.NEXT_PUBLIC_EMAIl}` })
     }
 }
