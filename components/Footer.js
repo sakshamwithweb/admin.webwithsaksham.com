@@ -12,7 +12,7 @@ const Footer = () => {
 
     const sendQuestion = async () => {
         try {
-            const req1 = await fetch("/api/sendQuestion", {
+            const req1 = await fetch("/api/question", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

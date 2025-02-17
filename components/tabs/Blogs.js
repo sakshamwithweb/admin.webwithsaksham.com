@@ -13,12 +13,11 @@ const Blogs = () => {
   useEffect(() => {
     (async () => {
       try {
-        const req = await fetch(`/api/fetchBlog`, {
-          method: "POST",
+        const req = await fetch(`/api/post`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json"
-          },
-          body: JSON.stringify({})
+          }
         })
         if (!req.ok) {
           throw new Error(`Error ${req.status}: ${req.statusText}`);
@@ -42,8 +41,8 @@ const Blogs = () => {
     try {
       if (!wait) {
         setWait(true)
-        const req = await fetch(`/api/deletePost`, {
-          method: "POST",
+        const req = await fetch(`/api/post`, {
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json"
           },

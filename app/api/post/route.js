@@ -5,6 +5,7 @@ import { NextResponse } from "next/server"
 import nodemailer from "nodemailer";
 import uuid4 from "uuid4"
 
+// create blog
 export async function POST(req) {
     try {
         const { title, content, publishedTime, categoryValue } = await req.json()
@@ -67,6 +68,31 @@ export async function POST(req) {
         }
 
         return NextResponse.json({ success: true, id: id })
+    } catch (error) {
+        return NextResponse.json({ success: false })
+    }
+}
+
+// delete blog
+export async function DELETE(req) {
+    try {
+        const { id } = await req.json()
+        if (!id || id?.length == 0) throw new Error("something is wrong");
+        await connectDb()
+        await Post.deleteOne({ id: id })
+        return NextResponse.json({ success: true })
+    } catch (error) {
+        return NextResponse.json({ success: false })
+    }
+}
+
+// fetch blog
+export async function GET() {
+    try {
+        await connectDb()
+        const posts = await Post.find({})
+        if (!posts) return NextResponse.json({ success: false })
+        return NextResponse.json({ success: true, data: posts })
     } catch (error) {
         return NextResponse.json({ success: false })
     }

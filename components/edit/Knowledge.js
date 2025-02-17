@@ -24,8 +24,8 @@ const Knowledge = ({ knowledge }) => {
                 return;
             }
             setWait(true)
-            const req = await fetch(`/api/changeAdminDetails`, {
-                method: "POST",
+            const req = await fetch(`/api/adminDetails`, {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },

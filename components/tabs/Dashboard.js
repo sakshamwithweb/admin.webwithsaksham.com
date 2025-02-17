@@ -13,7 +13,7 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
-        const req = await fetch(`/api/fetchAdminDetails`, {
+        const req = await fetch(`/api/adminDetails`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

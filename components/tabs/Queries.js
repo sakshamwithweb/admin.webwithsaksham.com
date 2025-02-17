@@ -12,12 +12,11 @@ const Queries = () => {
   useEffect(() => {
     (async () => {
       try {
-        const req = await fetch(`/api/fetchQuestions`, {
-          method: "POST",
+        const req = await fetch(`/api/question`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({})
         })
         if (!req.ok) {
           throw new Error(`Error ${req.status}: ${req.statusText}`);
@@ -52,8 +51,8 @@ const Queries = () => {
       changedData.map((item, index) => {
         item != queries[index] && changedQueries.push(item._id)
       })
-      const req = await fetch(`/api/resolveQuestions`, {
-        method: "POST",
+      const req = await fetch(`/api/question`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },

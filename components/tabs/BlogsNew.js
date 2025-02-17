@@ -56,7 +56,7 @@ const AdminBlogsNew = () => {
     try {
       setWait(true)
       const publishedTime = new Date().toISOString()
-      const req = await fetch(`/api/newPost`, {
+      const req = await fetch(`/api/post`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
