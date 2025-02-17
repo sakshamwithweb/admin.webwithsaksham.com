@@ -42,8 +42,7 @@
     "tailwind-scrollbar": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
     "typed.js": "^2.1.0",
-    "unified": "^11.0.5",
-    "uuid4": "^2.0.3"
+    "unified": "^11.0.5"
   },
   "devDependencies": {
     "postcss": "^8",

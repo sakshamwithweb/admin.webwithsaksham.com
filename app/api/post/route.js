@@ -3,7 +3,6 @@ import { SubscribeEmail } from "@/lib/models/subscribeEmail"
 import connectDb from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 import nodemailer from "nodemailer";
-import uuid4 from "uuid4"
 
 // create blog
 export async function POST(req) {
@@ -11,15 +10,14 @@ export async function POST(req) {
         const { title, content, publishedTime, categoryValue } = await req.json()
         if (!title || !content || !publishedTime || !categoryValue || title?.length == 0 || content?.length == 0 || publishedTime?.length == 0 || categoryValue?.length == 0) throw new Error("something is wrong");
         await connectDb()
-        const id = uuid4()
         const post = new Post({
             title: title,
             content: content,
             publishedTime: publishedTime,
-            id: id,
             categoryValue: categoryValue
         })
-        await post.save()
+        const result = await post.save()
+        const id = result._id.toString()
 
         const emailsDb = await SubscribeEmail.find({})
         const emails = emailsDb.flatMap(i => i.email);
@@ -76,10 +74,10 @@ export async function POST(req) {
 // delete blog
 export async function DELETE(req) {
     try {
-        const { id } = await req.json()
-        if (!id || id?.length == 0) throw new Error("something is wrong");
+        const { _id } = await req.json()
+        if (!_id || _id?.length == 0) throw new Error("something is wrong");
         await connectDb()
-        await Post.deleteOne({ id: id })
+        await Post.deleteOne({ _id: _id })
         return NextResponse.json({ success: true })
     } catch (error) {
         return NextResponse.json({ success: false })
