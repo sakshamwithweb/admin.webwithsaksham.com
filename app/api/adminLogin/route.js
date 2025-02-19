@@ -19,16 +19,16 @@ async function CheckHashPass(userPass, hashPass) {
 export async function POST(req) {
     try {
         const isAllowed = await rateLimit(req);
-        if (!isAllowed) return NextResponse.json({ success: false, error: "Too many requests, try 5 minutes later" });
+        if (!isAllowed) return NextResponse.json({ success: false, message: "Too many requests, try 5 minutes later" });
         const { userName, pass } = await req.json()
         const sanitizedUserName = DOMPurify.sanitize(userName);
         const sanitizedPass = DOMPurify.sanitize(pass);
         if (!sanitizedUserName || !sanitizedPass || sanitizedUserName?.length == 0 || sanitizedPass?.length == 0) throw new Error("something is wrong");
         await connectDb()
         const admin = await Admin.findOne({ userName: sanitizedUserName })
-        if (!admin) return NextResponse.json({ success: false, error: "Wrong credentials" })
+        if (!admin) return NextResponse.json({ success: false, message: "Wrong credentials" })
         const checkPass = await CheckHashPass(sanitizedPass, admin.pass)
-        if (checkPass != true) return NextResponse.json({ success: false, error: "Wrong credentials" })
+        if (checkPass != true) return NextResponse.json({ success: false, message: "Wrong credentials" })
 
         // Delete previous sessions
         await Session.deleteMany({})
@@ -55,6 +55,6 @@ export async function POST(req) {
         return response;
     } catch (error) {
         console.log(error.message)
-        return NextResponse.json({ success: false, error: `Server error, contact:${process.env.NEXT_PUBLIC_EMAIl}` })
+        return NextResponse.json({ success: false, error: `Server error` })
     }
 }

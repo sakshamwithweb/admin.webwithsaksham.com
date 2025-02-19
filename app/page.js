@@ -77,7 +77,11 @@ const page = () => {
                 })
                 router.push("/dashboard")
             } else {
-                throw new Error("Error while logging admin!");
+                if (res1?.message) {
+                    throw new Error(res1.message);
+                } else {
+                    throw new Error("Error while logging admin!");
+                }
             }
             setWait(false)
             setUserName("")
