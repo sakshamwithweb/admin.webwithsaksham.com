@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { Trash } from 'lucide-react'
+import DOMPurify from "isomorphic-dompurify";
 
 const Knowledge = ({ knowledge }) => {
     const [changedData, setChangedData] = useState(null)
@@ -24,12 +25,17 @@ const Knowledge = ({ knowledge }) => {
                 return;
             }
             setWait(true)
+            let sanitizedData = changedData.map((item) => {
+                return Object.fromEntries(Object.entries(item).map(([key, value]) => {
+                    return [key, value != 0 ? DOMPurify.sanitize(value) : value]; // if value is number as 0 so don't change or else purify
+                }));
+            })
             const req = await fetch(`/api/adminDetails`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ changedData, section: "knowledge" })
+                body: JSON.stringify({ changedData: sanitizedData, section: "knowledge" })
             })
             if (!req.ok) {
                 throw new Error(`Error ${req.status}: ${req.statusText}`);

@@ -3,12 +3,12 @@ import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { Trash } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
+import DOMPurify from "isomorphic-dompurify";
 
 const Project = ({ project }) => {
     const [changedData, setChangedData] = useState(null)
     const { toast } = useToast()
     const [wait, setWait] = useState(false)
-    const [focusedInput, setFocusedInput] = useState(null)
 
     useEffect(() => {
         setChangedData(project)
@@ -25,12 +25,17 @@ const Project = ({ project }) => {
                 return;
             }
             setWait(true)
+            const sanitizedData = changedData.map((item) => {
+                return Object.fromEntries(Object.entries(item).map(([key, value]) => {
+                    return [key, DOMPurify.sanitize(value)];
+                }));
+            })
             const req = await fetch(`/api/adminDetails`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ changedData, section: "project" })
+                body: JSON.stringify({ changedData:sanitizedData, section: "project" })
             })
             if (!req.ok) {
                 throw new Error(`Error ${req.status}: ${req.statusText}`);

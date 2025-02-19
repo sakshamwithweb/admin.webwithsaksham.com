@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import React, { useEffect, useState } from 'react'
+import DOMPurify from "isomorphic-dompurify";
 
 const About = ({ about }) => {
     const [changedData, setChangedData] = useState(null)
@@ -23,12 +24,17 @@ const About = ({ about }) => {
                 return;
             }
             setWait(true)
+            const sanitizedObject = Object.fromEntries(
+                Object.entries(changedData).map(([key, value]) => {
+                    return [key, DOMPurify.sanitize(value)];
+                })
+            );
             const req = await fetch(`/api/adminDetails`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ changedData, section: "about" })
+                body: JSON.stringify({ changedData:sanitizedObject, section: "about" })
             })
             if (!req.ok) {
                 throw new Error(`Error ${req.status}: ${req.statusText}`);

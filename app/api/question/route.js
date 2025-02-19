@@ -1,6 +1,7 @@
 import { Question } from "@/lib/models/question";
 import connectDb from "@/lib/mongoose";
 import { NextResponse } from "next/server";
+import DOMPurify from "isomorphic-dompurify";
 
 //get questions
 export async function GET() {
@@ -18,10 +19,11 @@ export async function GET() {
 export async function POST(params) {
     try {
         const { question } = await params.json();
-        if (!question || question?.length == 0) throw new Error("something is wrong");
+        const sanitizedQuestion = DOMPurify.sanitize(question);
+        if (!sanitizedQuestion || sanitizedQuestion?.length == 0) throw new Error("something is wrong");
         await connectDb()
         const newQ = new Question({
-            question: question
+            question: sanitizedQuestion
         })
         await newQ.save()
         return NextResponse.json({ success: true })
@@ -34,10 +36,10 @@ export async function POST(params) {
 export async function PUT(req) {
     try {
         const { changedQueries } = await req.json()
-        if (!changedQueries || changedQueries?.length == 0 ) throw new Error("something is wrong");
+        if (!changedQueries || changedQueries?.length == 0) throw new Error("something is wrong");
         await connectDb()
         for (const i of changedQueries) {
-            await Question.findOneAndUpdate({ _id: i }, { resolves: true }) 
+            await Question.findOneAndUpdate({ _id: i }, { resolves: true })
         }
         return NextResponse.json({ success: true })
     } catch (err) {

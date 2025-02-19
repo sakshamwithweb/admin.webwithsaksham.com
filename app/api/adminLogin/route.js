@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcrypt"
 import { rateLimit } from "@/lib/rateLimit";
 import { Session } from "@/lib/models/session";
+import DOMPurify from "isomorphic-dompurify";
 
 async function CheckHashPass(userPass, hashPass) {
     try {
@@ -20,11 +21,13 @@ export async function POST(req) {
         const isAllowed = await rateLimit(req);
         if (!isAllowed) return NextResponse.json({ success: false, error: "Too many requests, try 5 minutes later" });
         const { userName, pass } = await req.json()
-        if (!userName || !pass || userName?.length == 0 || pass?.length == 0) throw new Error("something is wrong");
+        const sanitizedUserName = DOMPurify.sanitize(userName);
+        const sanitizedPass = DOMPurify.sanitize(pass);
+        if (!sanitizedUserName || !sanitizedPass || sanitizedUserName?.length == 0 || sanitizedPass?.length == 0) throw new Error("something is wrong");
         await connectDb()
-        const admin = await Admin.findOne({ userName: userName })
+        const admin = await Admin.findOne({ userName: sanitizedUserName })
         if (!admin) return NextResponse.json({ success: false, error: "Wrong credentials" })
-        const checkPass = await CheckHashPass(pass, admin.pass)
+        const checkPass = await CheckHashPass(sanitizedPass, admin.pass)
         if (checkPass != true) return NextResponse.json({ success: false, error: "Wrong credentials" })
 
         // Delete previous sessions

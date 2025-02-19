@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import React, { useEffect, useState } from 'react'
 import { useToast } from "@/hooks/use-toast"
 import { notFound, useRouter } from 'next/navigation'
+import DOMPurify from "isomorphic-dompurify";
 
 const page = () => {
     const [userName, setUserName] = useState("")
@@ -56,12 +57,14 @@ const page = () => {
                 setWait(false)
                 return
             }
+            const sanitizedUserName = DOMPurify.sanitize(userName);
+            const sanitizedPass = DOMPurify.sanitize(pass);
             const req1 = await fetch(`/api/adminLogin`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ userName, pass })
+                body: JSON.stringify({ userName: sanitizedUserName, pass: sanitizedPass })
             })
             if (!req1.ok) {
                 throw new Error(`Error ${req1.status}: ${req1.statusText}`);

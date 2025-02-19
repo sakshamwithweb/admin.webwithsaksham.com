@@ -3,6 +3,7 @@ import { SubscribeEmail } from "@/lib/models/subscribeEmail"
 import connectDb from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 import nodemailer from "nodemailer";
+import DOMPurify from "isomorphic-dompurify";
 
 // create blog
 export async function POST(req) {
@@ -75,9 +76,10 @@ export async function POST(req) {
 export async function DELETE(req) {
     try {
         const { _id } = await req.json()
-        if (!_id || _id?.length == 0) throw new Error("something is wrong");
+        const sanitizedId = DOMPurify.sanitize(_id)
+        if (!sanitizedId || sanitizedId?.length == 0) throw new Error("something is wrong");
         await connectDb()
-        await Post.deleteOne({ _id: _id })
+        await Post.deleteOne({ _id: sanitizedId })
         return NextResponse.json({ success: true })
     } catch (error) {
         return NextResponse.json({ success: false })

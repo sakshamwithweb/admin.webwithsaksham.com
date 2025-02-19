@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-
+import DOMPurify from "isomorphic-dompurify";
 
 const Footer = () => {
     const [question, setQuestion] = useState("")
@@ -12,12 +12,13 @@ const Footer = () => {
 
     const sendQuestion = async () => {
         try {
+            const sanitizedQuestion = DOMPurify.sanitize(question);
             const req1 = await fetch("/api/question", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ question: question })
+                body: JSON.stringify({ question: sanitizedQuestion })
             })
             if (!req1.ok) {
                 throw new Error(`Error ${req1.status}: ${req1.statusText}`);
