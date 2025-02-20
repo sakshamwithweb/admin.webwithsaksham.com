@@ -7,7 +7,7 @@ const About = ({about}) => {
             <h1 className='text-3xl font-bold underline'>About</h1>
             <div className='my-9'>
                 <Avatar>
-                    <AvatarImage src="/image.jpg" alt="avatar" />
+                    <AvatarImage src="/image.png" alt="avatar" />
                     <AvatarFallback>Saksham</AvatarFallback>
                 </Avatar>
             </div>
