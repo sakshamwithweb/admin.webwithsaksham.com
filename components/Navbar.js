@@ -15,7 +15,6 @@ import { usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import LoadingBar from 'react-top-loading-bar';
-import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const [logged, setLogged] = useState(false)
