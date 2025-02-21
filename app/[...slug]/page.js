@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import React, { useEffect, useState, useMemo } from 'react'
 import { useToast } from "@/hooks/use-toast"
 import { notFound, usePathname, useRouter } from 'next/navigation'
+import { Loader } from '@/components/Loader'
 
 // Memoize(storing like) the component mapping so as to could retreive the component instead of recreating(if exist)
 const componentCache = new Map()
@@ -13,7 +14,7 @@ const getDynamicComponent = (compName) => {
             compName,
             dynamic(() => import(`@/components/tabs/${compName}.js`), {
                 ssr: false,
-                loading: () => <div>Loading component...</div>
+                loading: () => <Loader/>
             })
         )
     }
@@ -71,7 +72,7 @@ const Page = () => {
     }, [router, toast])
 
     if (!logged) {
-        return <div>Loading...</div>
+        return <Loader/>
     }
 
     return <Component />

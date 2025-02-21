@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { Trash } from 'lucide-react'
 import DOMPurify from "isomorphic-dompurify";
+import { Loader } from '../Loader'
 
 const Knowledge = ({ knowledge }) => {
     const [changedData, setChangedData] = useState(null)
@@ -60,7 +61,7 @@ const Knowledge = ({ knowledge }) => {
     }
 
     if (!changedData) {
-        return <p className='text-center m-5'>Loading ...</p>
+        return <Loader/>
     }
 
     return (

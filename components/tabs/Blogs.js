@@ -5,6 +5,7 @@ import { EllipsisVertical, Link2Icon, Plus, Trash } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { Loader } from '../Loader'
 
 const Blogs = () => {
   const [blogsData, setBlogsData] = useState(null)
@@ -70,7 +71,7 @@ const Blogs = () => {
   }
 
   if (!blogsData) {
-    return <p className='m-2 text-center'>Loading...</p>
+    return <Loader/>
   } else if (blogsData.length == 0) {
     return (
       <div className='flex justify-center items-center gap-5'>

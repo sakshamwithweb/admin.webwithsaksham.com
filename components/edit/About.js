@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import React, { useEffect, useState } from 'react'
 import DOMPurify from "isomorphic-dompurify";
+import { Loader } from '../Loader';
 
 const About = ({ about }) => {
     const [changedData, setChangedData] = useState(null)
@@ -59,7 +60,7 @@ const About = ({ about }) => {
     }
 
     if (!changedData) {
-        return <p className='m-2 text-center'>Loading...</p>
+        return <Loader/>
     }
 
     return (

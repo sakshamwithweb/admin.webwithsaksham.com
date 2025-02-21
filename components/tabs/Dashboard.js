@@ -4,6 +4,7 @@ import { CircleX, Edit } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { Loader } from '../Loader'
 
 const Dashboard = () => {
   const [edit, setEdit] = useState({ mode: false, editTo: "" })
@@ -45,7 +46,7 @@ const Dashboard = () => {
   }, [edit]);
 
   if (!data) {
-    return <p className='text-center'>Loading..</p>
+    return <Loader/>
   }
 
   return (

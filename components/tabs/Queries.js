@@ -3,6 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
 import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { Loader } from '../Loader';
 
 const Queries = () => {
   const [queries, setQueries] = useState(null)
@@ -76,7 +77,7 @@ const Queries = () => {
 
   if (!changedData) {
     return (
-      <div className='text-center text-xl m-4'>Loading...</div>
+      <Loader/>
     )
   } else if (changedData?.length == 0) {
     return (

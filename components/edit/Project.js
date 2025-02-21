@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast'
 import { Trash } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import DOMPurify from "isomorphic-dompurify";
+import { Loader } from '../Loader'
 
 const Project = ({ project }) => {
     const [changedData, setChangedData] = useState(null)
@@ -61,7 +62,7 @@ const Project = ({ project }) => {
     }
 
     if (!changedData) {
-        return <p className='text-center m-5'>Loading ...</p>
+        return <Loader/>
     }
 
     return (
