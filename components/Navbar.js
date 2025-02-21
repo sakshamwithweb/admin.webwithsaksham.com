@@ -14,11 +14,32 @@ import { ModeToggle } from './ui/mode'
 import { usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import LoadingBar from 'react-top-loading-bar';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const [logged, setLogged] = useState(false)
   const pathname = usePathname()
   const { toast } = useToast()
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    setProgress(20)
+
+    setTimeout(() => {
+      setProgress(40)
+    }, 100);
+
+    setTimeout(() => {
+      setProgress(100)
+    }, 400);
+  }, [pathname])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setProgress(0)
+    }, 500);
+  }, [])
 
   useEffect(() => {
     try {
@@ -52,6 +73,11 @@ const Navbar = () => {
   if (!logged) {
     return (
       <nav className='flex mx-auto sticky top-0 p-2 md:p-2 justify-between items-center backdrop-blur border border-b-gray-400/50 z-50'>
+        <LoadingBar
+          color="#9333EA"
+          progress={progress}
+          onLoaderFinished={() => setProgress(0)}
+        />
         <div className='font-bold text-xl mx-2 md:mx-4'>
           <Link href={"https://www.webwithsaksham.com"}>SakshamWithWeb</Link>
         </div>
@@ -87,6 +113,11 @@ const Navbar = () => {
 
   return (
     <nav className='backdrop-blur z-50 sticky top-0 py-2 md:px-11 px-2 border-b flex items-center justify-between'>
+      <LoadingBar
+        color="#9333EA"
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <Link className='font-bold text-xl' href={"https://www.webwithsaksham.com"}>SakshamWithWeb</Link>
       <div className='flex'>
         {/*For Smaller device*/}
