@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import MDEditor from '@uiw/react-md-editor';
-import { CircleX, Play } from 'lucide-react';
+import { Play, Undo2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
@@ -15,6 +15,7 @@ import remarkRehype from 'remark-rehype'
 import { unified } from 'unified'
 import rehypePrettyCode from "rehype-pretty-code";
 import { transformerCopyButton } from '@rehype-pretty/transformers'
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import {
   Select,
   SelectContent,
@@ -215,9 +216,22 @@ const AdminBlogsNew = () => {
           <Button disabled={wait} onClick={handleSubmit} className="mx-auto w-11/12">Post</Button>
         </>
       )}
+      <Button
+        data-tooltip-content={!review ? "See how it will look" : "Return to edit mode"}
+        className="absolute top-1 right-1"
+        onClick={() => setReview(!review)}
+      >
+        {review === false ? (
+          <Play />
+        ) : (
+          <Undo2 />
+        )
+        }
+      </Button >
 
-      <Button className="absolute top-1 right-1" onClick={() => { setReview(!review) }}>{review ? <CircleX /> : <Play />}</Button>
-    </div>
+      <ReactTooltip anchorSelect="[data-tooltip-content]" />
+
+    </div >
   );
 }
 

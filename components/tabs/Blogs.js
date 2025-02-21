@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast'
 import { EllipsisVertical, Link2Icon, Plus, Trash } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const Blogs = () => {
   const [blogsData, setBlogsData] = useState(null)
@@ -74,14 +75,15 @@ const Blogs = () => {
     return (
       <div className='flex justify-center items-center gap-5'>
         <p className='m-2 text-center'>No Post is there</p>
-        <Link href={"/blogs/new"}><Button><Plus /></Button></Link>
+        <Link data-tooltip-content="New Blog!" href={"/blogs/new"}><Button><Plus /></Button></Link>
+        <ReactTooltip anchorSelect="[data-tooltip-content]" />
       </div>
     )
   }
 
   return (
     <div className='relative min-h-screen'>
-      <Link className='absolute top-0 right-1' href={"/blogs/new"}><Button><Plus /></Button></Link>
+      <Link data-tooltip-content="New Blog!" className='absolute top-0 right-1' href={"/blogs/new"}><Button><Plus /></Button></Link>
       <h1 className='text-xl text-center font-bold'>Your Blogs</h1>
       <div className='flex flex-col gap-6 py-10 w-full items-center'>
         {blogsData.map((item, index) => {
@@ -92,7 +94,7 @@ const Blogs = () => {
               </div>
               <div className='absolute top-4 right-2'>
                 <DropdownMenu>
-                  <DropdownMenuTrigger><EllipsisVertical /></DropdownMenuTrigger>
+                  <DropdownMenuTrigger data-tooltip-content="Menu"><EllipsisVertical /></DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem onClick={() => {
                       navigator.clipboard.writeText(`https://blog.webwithsaksham.com/${item._id}`).then(() => {
@@ -113,6 +115,7 @@ const Blogs = () => {
           )
         })}
       </div>
+      <ReactTooltip anchorSelect="[data-tooltip-content]" />
     </div>
   )
 }

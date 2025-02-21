@@ -13,6 +13,7 @@ import {
 import { ModeToggle } from './ui/mode'
 import { usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const Navbar = () => {
   const [logged, setLogged] = useState(false)
@@ -55,10 +56,10 @@ const Navbar = () => {
           <Link href={"https://www.webwithsaksham.com"}>SakshamWithWeb</Link>
         </div>
         <div className='flex'>
-          <span className='hidden md:block'> <ModeToggle /></span>
+          <span className='hidden md:block' data-tooltip-content="Switch the mode"> <ModeToggle /></span>
           {/*For Smaller device*/}
           <div className='md:hidden mx-4'>
-            <span className='mx-4'> <ModeToggle /></span>
+            <span className='mx-4' data-tooltip-content="Switch the mode"> <ModeToggle /></span>
             <Sheet>
               <SheetTrigger aria-label='hamburger'>
                 <RxHamburgerMenu />
@@ -79,7 +80,8 @@ const Navbar = () => {
             <li><Link href={`/`}>Login</Link></li>
           </ul>
         </div>
-      </nav >
+        <ReactTooltip anchorSelect="[data-tooltip-content]" />
+      </nav>
     )
   }
 
@@ -89,7 +91,7 @@ const Navbar = () => {
       <div className='flex'>
         {/*For Smaller device*/}
         <div className='md:hidden mx-4'>
-          <span className='mx-4'> <ModeToggle /></span>
+          <span className='mx-4' data-tooltip-content="Switch the mode"> <ModeToggle /></span>
           <Sheet>
             <SheetTrigger aria-label='hamburger'>
               <RxHamburgerMenu />
@@ -109,12 +111,13 @@ const Navbar = () => {
 
         {/*For biger device*/}
         <ul className='gap-3 md:flex hidden justify-center items-center'>
-          <ModeToggle />
+          <div data-tooltip-content="Switch the mode"><ModeToggle /></div>
           <Link className={`${pathname.includes("/dashboard") && "underline font-bold"}`} href={"/dashboard"}>Dashboard</Link>
           <Link className={`${pathname.includes("/blogs") && "underline font-bold"}`} href={"/blogs"}>Blogs</Link>
           <Link className={`${pathname.includes("/queries") && "underline font-bold"}`} href={"/queries"}>Queries</Link>
         </ul>
       </div>
+      <ReactTooltip anchorSelect="[data-tooltip-content]" />
     </nav>
   )
 

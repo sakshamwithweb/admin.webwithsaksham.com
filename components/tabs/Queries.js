@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
 import React, { useEffect, useState } from 'react'
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const Queries = () => {
   const [queries, setQueries] = useState(null)
@@ -92,7 +93,7 @@ const Queries = () => {
               <h2 className='whitespace-nowrap'>{item.question}</h2>
             </div>
             <div className=''>
-              <Checkbox value={item.resolves} onCheckedChange={(checked) => setChangedData((prev) =>
+              <Checkbox data-tooltip-content="Select which you have to resolve" value={item.resolves} onCheckedChange={(checked) => setChangedData((prev) =>
                 prev.map((items, idx) =>
                   idx === index ? { ...items, resolves: checked } : items
                 )
@@ -102,6 +103,7 @@ const Queries = () => {
         )
       })}
       <Button disabled={wait} onClick={handleClick}>Save</Button>
+      <ReactTooltip anchorSelect="[data-tooltip-content]" />
     </div>
   )
 }

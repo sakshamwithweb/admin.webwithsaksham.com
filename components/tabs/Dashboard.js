@@ -3,12 +3,14 @@ import { useToast } from '@/hooks/use-toast'
 import { CircleX, Edit } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const Dashboard = () => {
   const [edit, setEdit] = useState({ mode: false, editTo: "" })
   const [data, setData] = useState(null)
   const [sections] = useState(["about", "knowledge", "project"])
   const { toast } = useToast()
+  const [tooltipKey, setTooltipKey] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -38,6 +40,10 @@ const Dashboard = () => {
     })()
   }, [])
 
+  useEffect(() => {
+    setTooltipKey((prevKey) => prevKey + 1); // React uses the 'key' props to track any element in DOM and if 'key' is changed so the react treat that element as new and refresh it so the problem was that the tooltip was unable to identify any changes in dom which led to keep the tooltip but now it is refreshing and will have to make new one. The tooltip key will keep increasing..
+  }, [edit]);
+
   if (!data) {
     return <p className='text-center'>Loading..</p>
   }
@@ -51,7 +57,12 @@ const Dashboard = () => {
           const SectionEditComponent = dynamic(() => import(`@/components/edit/${compName}.js`), { ssr: false });
           return (
             <section key={index} className='flex-1 relative flex flex-col items-center justify-center border-b'>
-              <button className='absolute top-1 right-1' onClick={() => { setEdit({ mode: false, editTo: "" }) }}><CircleX /></button> {/*If it is clicked ad something is vhanged so firstly ask do you want to save what you written , give 2 button save and No*/}
+              <ReactTooltip
+                key={tooltipKey + 1}
+                id={`close-${index}`}
+                content="Close the editor"
+              />
+              <button className='absolute top-1 right-1' onClick={() => { setEdit({ mode: false, editTo: "" }) }} data-tooltip-id={`close-${index}`}><CircleX /></button>
               <SectionEditComponent {...{ [section]: data[section] }} />
             </section>
           )
@@ -60,7 +71,12 @@ const Dashboard = () => {
 
           return (
             <section key={index} className='flex-1 relative flex flex-col items-center justify-center border-b'>
-              <button className='absolute top-1 right-1' onClick={() => { setEdit({ mode: true, editTo: section }) }}><Edit /></button>
+              <ReactTooltip
+                key={tooltipKey}
+                id={`edit-${index}`}
+                content="Edit the section"
+              />
+              <button className='absolute top-1 right-1' onClick={() => { setEdit({ mode: true, editTo: section }) }} data-tooltip-id={`edit-${index}`}><Edit /></button>
               <SectionComponent {...{ [section]: data[section] }} />
             </section>
           )

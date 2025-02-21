@@ -33,6 +33,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
+    "react-tooltip": "^5.28.0",
     "rehype-document": "^7.0.3",
     "rehype-format": "^5.0.1",
     "rehype-pretty-code": "^0.14.0",
