@@ -57,13 +57,17 @@ const AdminBlogsNew = () => {
     try {
       setWait(true)
       const publishedTime = new Date().toISOString()
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 120000); // 2-minute timeout
       const req = await fetch(`/api/post`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category })
+        body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category }),
+        signal: controller.signal,
       })
+      clearTimeout(timeout);
       if (!req.ok) {
         throw new Error(`Error ${req.status}: ${req.statusText}`);
       }
@@ -79,10 +83,12 @@ const AdminBlogsNew = () => {
         throw new Error("Error while creating new post!");
       }
     } catch (error) {
+      clearTimeout(timeout);
       toast({
         title: `❌ ${error.message}`,
         description: `Write your issue in footer!`,
       })
+      setWait(false);
     }
   }
 
