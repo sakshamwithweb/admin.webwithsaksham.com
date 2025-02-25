@@ -1,9 +1,11 @@
 import { Session } from "@/lib/models/session";
 import connectDb from "@/lib/mongoose";
 import { NextResponse } from "next/server";
+import { cookies } from 'next/headers';
 
 export async function POST(req) {
     try {
+        const cookieStore = cookies()
         const sessionId = req.cookies.get('sessionId');
         const ipAddress = req.headers.get("x-forwarded-for") || req.connection.remoteAddress || "Unknown IP";
         const userAgent = req.headers.get("user-agent") || "Unknown User Agent";
@@ -15,7 +17,10 @@ export async function POST(req) {
 
         // check valid
         const isValid = await Session.findOne({ _id: sessionId.value })
-        if (!isValid) return NextResponse.json({ success: false, message: "Session id is not valid" }, { status: 401 })
+        if (!isValid) {
+            cookieStore.set('sessionId', '', { maxAge: 0, path: '/' }); // Ensure path is set
+            return NextResponse.json({ success: false, message: "Session id is not valid" }, { status: 401 })
+        }
 
         if (isValid?.ipAddress !== ipAddress || isValid?.userAgent !== userAgent) {
             await Session.deleteMany({})
