@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { cookies } from "next/headers";
 
 const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
@@ -35,4 +36,18 @@ export async function middleware(req) {
         response.headers.set("X-RateLimit-Reset", reset);
         return response
     }
+    const token = (await cookies()).get('sessionId')?.value
+    if (token) {
+        if (pathname == "/") {
+            return NextResponse.redirect(new URL('/dashboard', req.url))
+        }
+    } else {
+        if (pathname !== "/") {
+            return NextResponse.redirect(new URL('/', req.url))
+        }
+    }
 }
+
+export const config = {
+    matcher: ["/api/:path*", "/dashboard", "/blogs/:path*", "/queries", "/"],
+};
