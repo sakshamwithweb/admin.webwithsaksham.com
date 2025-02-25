@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast'
 import { Trash } from 'lucide-react'
 import DOMPurify from "isomorphic-dompurify";
 import { Loader } from '../Loader'
+import { getStatusMessage } from '@/lib/statusMessage'
 
 const Knowledge = ({ knowledge }) => {
     const [changedData, setChangedData] = useState(null)
@@ -39,7 +40,8 @@ const Knowledge = ({ knowledge }) => {
                 body: JSON.stringify({ changedData: sanitizedData, section: "knowledge" })
             })
             if (!req.ok) {
-                throw new Error(`Error ${req.status}: ${req.statusText}`);
+                const statusText = await getStatusMessage(req.status)
+                throw new Error(`Error ${req.status}: ${statusText}`);
             }
             const res = await req.json()
             setWait(false)
@@ -61,7 +63,7 @@ const Knowledge = ({ knowledge }) => {
     }
 
     if (!changedData) {
-        return <Loader/>
+        return <Loader />
     }
 
     return (

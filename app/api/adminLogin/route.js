@@ -2,7 +2,6 @@ import { Admin } from "@/lib/models/admin"
 import connectDb from "@/lib/mongoose"
 import { NextResponse } from "next/server"
 import bcrypt from "bcrypt"
-import { rateLimit } from "@/lib/rateLimit";
 import { Session } from "@/lib/models/session";
 import DOMPurify from "isomorphic-dompurify";
 
@@ -18,17 +17,15 @@ async function CheckHashPass(userPass, hashPass) {
 
 export async function POST(req) {
     try {
-        const isAllowed = await rateLimit(req);
-        if (!isAllowed) return NextResponse.json({ success: false, message: "Too many requests, try 5 minutes later" });
         const { userName, pass } = await req.json()
         const sanitizedUserName = DOMPurify.sanitize(userName);
         const sanitizedPass = DOMPurify.sanitize(pass);
-        if (!sanitizedUserName || !sanitizedPass || sanitizedUserName?.length == 0 || sanitizedPass?.length == 0) throw new Error("something is wrong");
+        if (!sanitizedUserName || !sanitizedPass || sanitizedUserName?.length == 0 || sanitizedPass?.length == 0) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         await connectDb()
         const admin = await Admin.findOne({ userName: sanitizedUserName })
-        if (!admin) return NextResponse.json({ success: false, message: "Wrong credentials" })
+        if (!admin) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         const checkPass = await CheckHashPass(sanitizedPass, admin.pass)
-        if (checkPass != true) return NextResponse.json({ success: false, message: "Wrong credentials" })
+        if (checkPass != true) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
 
         // Delete previous sessions
         await Session.deleteMany({})
@@ -54,7 +51,6 @@ export async function POST(req) {
 
         return response;
     } catch (error) {
-        console.log(error.message)
-        return NextResponse.json({ success: false, error: `Server error` })
+        return NextResponse.json({ success: false, message: "Unable to login" }, { status: 500 })
     }
 }

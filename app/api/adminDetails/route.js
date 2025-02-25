@@ -8,10 +8,10 @@ export async function POST() {
     try {
         await connectDb()
         const data = await AdminDetails.findOne({ name: "Saksham" })
-        if (!data) return NextResponse.json({ success: false, message: "Unable to fetch data" })
+        if (!data) return NextResponse.json({ success: false, message: "Admin data not found" }, { status: 404 })
         return NextResponse.json({ data: data, success: true })
     } catch (error) {
-        return NextResponse.json({ success: false, message: "Unable to fetch data" })
+        return NextResponse.json({ success: false, message: "Unable to fetch data admin data" }, { status: 500 })
     }
 }
 
@@ -40,13 +40,13 @@ export async function PUT(req) {
                 }));
             })
         } else {
-            throw new Error("Didn't match any section");
+            return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         }
-        if (!section || !sanitizedData) throw new Error("something is wrong");
+        if (!section || !sanitizedData) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         await connectDb()
         await AdminDetails.findOneAndUpdate({ name: "Saksham" }, { [section]: sanitizedData })
         return NextResponse.json({ success: true })
     } catch (error) {
-        return NextResponse.json({ success: false })
+        return NextResponse.json({ success: false, message: "Unable to change admin data" }, { status: 500 })
     }
 }

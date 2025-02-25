@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import DOMPurify from "isomorphic-dompurify";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { getStatusMessage } from '@/lib/statusMessage'
 
 const Footer = () => {
     const [question, setQuestion] = useState("")
@@ -22,7 +23,8 @@ const Footer = () => {
                 body: JSON.stringify({ question: sanitizedQuestion })
             })
             if (!req1.ok) {
-                throw new Error(`Error ${req1.status}: ${req1.statusText}`);
+                const statusText = await getStatusMessage(req1.status)
+                throw new Error(`Error ${req1.status}: ${statusText}`);
             }
             const res1 = await req1.json()
             if (res1.success) {

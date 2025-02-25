@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast'
 import React, { useEffect, useState } from 'react'
 import DOMPurify from "isomorphic-dompurify";
 import { Loader } from '../Loader';
+import { getStatusMessage } from '@/lib/statusMessage';
 
 const About = ({ about }) => {
     const [changedData, setChangedData] = useState(null)
@@ -35,10 +36,11 @@ const About = ({ about }) => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ changedData:sanitizedObject, section: "about" })
+                body: JSON.stringify({ changedData: sanitizedObject, section: "about" })
             })
             if (!req.ok) {
-                throw new Error(`Error ${req.status}: ${req.statusText}`);
+                const statusText = await getStatusMessage(req.status)
+                throw new Error(`Error ${req.status}: ${statusText}`);
             }
             const res = await req.json()
             setWait(false)
@@ -60,7 +62,7 @@ const About = ({ about }) => {
     }
 
     if (!changedData) {
-        return <Loader/>
+        return <Loader />
     }
 
     return (

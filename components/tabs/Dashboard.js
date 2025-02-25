@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Loader } from '../Loader'
+import { getStatusMessage } from '@/lib/statusMessage'
 
 const Dashboard = () => {
   const [edit, setEdit] = useState({ mode: false, editTo: "" })
@@ -24,7 +25,8 @@ const Dashboard = () => {
           body: JSON.stringify({})
         })
         if (!req.ok) {
-          throw new Error(`Error ${req.status}: ${req.statusText}`);
+          const statusText = await getStatusMessage(req.status)
+          throw new Error(`Error ${req.status}: ${statusText}`);
         }
         const res = await req.json()
         if (res.success) {
@@ -46,7 +48,7 @@ const Dashboard = () => {
   }, [edit]);
 
   if (!data) {
-    return <Loader/>
+    return <Loader />
   }
 
   return (

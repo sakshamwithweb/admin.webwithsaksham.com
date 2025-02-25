@@ -9,7 +9,7 @@ import DOMPurify from "isomorphic-dompurify";
 export async function POST(req) {
     try {
         const { title, content, publishedTime, categoryValue } = await req.json()
-        if (!title || !content || !publishedTime || !categoryValue || title?.length == 0 || content?.length == 0 || publishedTime?.length == 0 || categoryValue?.length == 0) throw new Error("something is wrong");
+        if (!title || !content || !publishedTime || !categoryValue || title?.length == 0 || content?.length == 0 || publishedTime?.length == 0 || categoryValue?.length == 0) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         await connectDb()
         const post = new Post({
             title: title,
@@ -71,7 +71,7 @@ export async function POST(req) {
 
         return NextResponse.json({ success: true, id: id })
     } catch (error) {
-        return NextResponse.json({ success: false })
+        return NextResponse.json({ success: false, message: "Unable to create blog" }, { status: 500 })
     }
 }
 
@@ -80,12 +80,12 @@ export async function DELETE(req) {
     try {
         const { _id } = await req.json()
         const sanitizedId = DOMPurify.sanitize(_id)
-        if (!sanitizedId || sanitizedId?.length == 0) throw new Error("something is wrong");
+        if (!sanitizedId || sanitizedId?.length == 0) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         await connectDb()
         await Post.deleteOne({ _id: sanitizedId })
         return NextResponse.json({ success: true })
     } catch (error) {
-        return NextResponse.json({ success: false })
+        return NextResponse.json({ success: false, message: "Unable to delete blog" }, { status: 500 })
     }
 }
 
@@ -94,9 +94,9 @@ export async function GET() {
     try {
         await connectDb()
         const posts = await Post.find({})
-        if (!posts) return NextResponse.json({ success: false })
+        if (!posts) return NextResponse.json({ success: false, message: "Post not found" }, { status: 404 })
         return NextResponse.json({ success: true, data: posts })
     } catch (error) {
-        return NextResponse.json({ success: false })
+        return NextResponse.json({ success: false, message: "Unable to fetch blog" }, { status: 500 })
     }
 }

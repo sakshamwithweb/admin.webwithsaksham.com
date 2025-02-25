@@ -4,6 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { useToast } from "@/hooks/use-toast"
 import { notFound, usePathname, useRouter } from 'next/navigation'
 import { Loader } from '@/components/Loader'
+import { getStatusMessage } from '@/lib/statusMessage'
 
 // Memoize(storing like) the component mapping so as to could retreive the component instead of recreating(if exist)
 const componentCache = new Map()
@@ -14,7 +15,7 @@ const getDynamicComponent = (compName) => {
             compName,
             dynamic(() => import(`@/components/tabs/${compName}.js`), {
                 ssr: false,
-                loading: () => <Loader/>
+                loading: () => <Loader />
             })
         )
     }
@@ -52,7 +53,8 @@ const Page = () => {
                     body: JSON.stringify({})
                 })
                 if (!req.ok) {
-                    throw new Error(`Error ${req.status}: ${req.statusText}`);
+                    const statusText = await getStatusMessage(req.status)
+                    throw new Error(`Error ${req.status}: ${statusText}`);
                 }
                 const res = await req.json()
                 if (res.success) {
@@ -72,7 +74,7 @@ const Page = () => {
     }, [router, toast])
 
     if (!logged) {
-        return <Loader/>
+        return <Loader />
     }
 
     return <Component />

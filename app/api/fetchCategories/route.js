@@ -11,6 +11,6 @@ export async function POST() {
         const removeDuplicates = (arr) => [...new Set(arr)];
         return NextResponse.json({ success: true, data: (removeDuplicates(arr)) })
     } catch (error) {
-        return NextResponse.json({ success: false })
+        return NextResponse.json({ success: false, message: "Unable to fetch categories" }, { status: 500 })
     }
 }

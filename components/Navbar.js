@@ -15,6 +15,7 @@ import { usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import LoadingBar from 'react-top-loading-bar';
+import { getStatusMessage } from '@/lib/statusMessage';
 
 const Navbar = () => {
   const [logged, setLogged] = useState(false)
@@ -51,7 +52,8 @@ const Navbar = () => {
           body: JSON.stringify({})
         })
         if (!req.ok) {
-          throw new Error(`Error ${req.status}: ${req.statusText}`);
+          const statusText = await getStatusMessage(req.status)
+          throw new Error(`Error ${req.status}: ${statusText}`);
         }
         const res = await req.json()
         if (res.success) {

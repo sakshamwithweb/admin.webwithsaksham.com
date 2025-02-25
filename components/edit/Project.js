@@ -5,6 +5,7 @@ import { Trash } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import DOMPurify from "isomorphic-dompurify";
 import { Loader } from '../Loader'
+import { getStatusMessage } from '@/lib/statusMessage'
 
 const Project = ({ project }) => {
     const [changedData, setChangedData] = useState(null)
@@ -36,10 +37,11 @@ const Project = ({ project }) => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ changedData:sanitizedData, section: "project" })
+                body: JSON.stringify({ changedData: sanitizedData, section: "project" })
             })
             if (!req.ok) {
-                throw new Error(`Error ${req.status}: ${req.statusText}`);
+                const statusText = await getStatusMessage(req.status)
+                throw new Error(`Error ${req.status}: ${statusText}`);
             }
             const res = await req.json()
             setWait(false)
@@ -62,7 +64,7 @@ const Project = ({ project }) => {
     }
 
     if (!changedData) {
-        return <Loader/>
+        return <Loader />
     }
 
     return (

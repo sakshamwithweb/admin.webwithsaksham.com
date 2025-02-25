@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast'
 import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Loader } from '../Loader';
+import { getStatusMessage } from '@/lib/statusMessage';
 
 const Queries = () => {
   const [queries, setQueries] = useState(null)
@@ -21,7 +22,8 @@ const Queries = () => {
           },
         })
         if (!req.ok) {
-          throw new Error(`Error ${req.status}: ${req.statusText}`);
+          const statusText = await getStatusMessage(req.status)
+          throw new Error(`Error ${req.status}: ${statusText}`);
         }
         const res = await req.json()
         if (res.success) {
@@ -77,7 +79,7 @@ const Queries = () => {
 
   if (!changedData) {
     return (
-      <Loader/>
+      <Loader />
     )
   } else if (changedData?.length == 0) {
     return (

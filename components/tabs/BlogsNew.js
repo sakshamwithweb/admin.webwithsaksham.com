@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { getStatusMessage } from '@/lib/statusMessage';
 
 
 function getFormattedDate() {
@@ -69,7 +70,8 @@ const AdminBlogsNew = () => {
       })
       clearTimeout(timeout);
       if (!req.ok) {
-        throw new Error(`Error ${req.status}: ${req.statusText}`);
+        const statusText = await getStatusMessage(req.status)
+        throw new Error(`Error ${req.status}: ${statusText}`);
       }
       const res = await req.json()
       setWait(false)
@@ -129,7 +131,8 @@ const AdminBlogsNew = () => {
           body: JSON.stringify({})
         })
         if (!req.ok) {
-          throw new Error(`Error ${req.status}: ${req.statusText}`);
+          const statusText = await getStatusMessage(req.status)
+          throw new Error(`Error ${req.status}: ${statusText}`);
         }
         const res = await req.json()
         if (res.success) {

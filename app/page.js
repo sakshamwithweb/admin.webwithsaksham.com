@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useToast } from "@/hooks/use-toast"
 import { notFound, useRouter } from 'next/navigation'
 import DOMPurify from "isomorphic-dompurify";
+import { getStatusMessage } from '@/lib/statusMessage'
 
 const page = () => {
     const [userName, setUserName] = useState("")
@@ -25,7 +26,8 @@ const page = () => {
                     body: JSON.stringify({})
                 })
                 if (!req.ok) {
-                    throw new Error(`Error ${req.status}: ${req.statusText}`);
+                    const statusText = await getStatusMessage(req.status)
+                    throw new Error(`Error ${req.status}: ${statusText}`);
                 }
                 const res = await req.json()
                 if (res.success) {
@@ -67,7 +69,8 @@ const page = () => {
                 body: JSON.stringify({ userName: sanitizedUserName, pass: sanitizedPass })
             })
             if (!req1.ok) {
-                throw new Error(`Error ${req1.status}: ${req1.statusText}`);
+                const statusText = await getStatusMessage(req1.status)
+                throw new Error(`Error ${req1.status}: ${statusText}`);
             }
             const res1 = await req1.json()
             if (res1.success) {

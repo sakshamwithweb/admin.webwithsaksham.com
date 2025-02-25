@@ -8,10 +8,10 @@ export async function GET() {
     try {
         await connectDb();
         const question = await Question.find({ resolves: false })
-        if (!question) return NextResponse.json({ success: false })
+        if (!question) return NextResponse.json({ success: false, message: "Question not found" }, { status: 404 })
         return NextResponse.json({ success: true, data: question })
     } catch (error) {
-        return NextResponse.json({ success: false })
+        return NextResponse.json({ success: false, message: "Unable to fetch qustions" }, { status: 500 })
     }
 }
 
@@ -20,7 +20,7 @@ export async function POST(params) {
     try {
         const { question } = await params.json();
         const sanitizedQuestion = DOMPurify.sanitize(question);
-        if (!sanitizedQuestion || sanitizedQuestion?.length == 0) throw new Error("something is wrong");
+        if (!sanitizedQuestion || sanitizedQuestion?.length == 0) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         await connectDb()
         const newQ = new Question({
             question: sanitizedQuestion
@@ -28,7 +28,7 @@ export async function POST(params) {
         await newQ.save()
         return NextResponse.json({ success: true })
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message })
+        return NextResponse.json({ success: false, message: "Unable to post question" }, { status: 500 })
     }
 }
 
@@ -36,13 +36,13 @@ export async function POST(params) {
 export async function PUT(req) {
     try {
         const { changedQueries } = await req.json()
-        if (!changedQueries || changedQueries?.length == 0) throw new Error("something is wrong");
+        if (!changedQueries || changedQueries?.length == 0) return NextResponse.json({ success: false, message: "Invalid payload" }, { status: 422 })
         await connectDb()
         for (const i of changedQueries) {
             await Question.findOneAndUpdate({ _id: i }, { resolves: true })
         }
         return NextResponse.json({ success: true })
     } catch (err) {
-        return NextResponse.json({ success: false })
+        return NextResponse.json({ success: false, message: "Unable to resolve question" }, { status: 500 })
     }
 }

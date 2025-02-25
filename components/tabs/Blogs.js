@@ -6,6 +6,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Loader } from '../Loader'
+import { getStatusMessage } from '@/lib/statusMessage'
 
 const Blogs = () => {
   const [blogsData, setBlogsData] = useState(null)
@@ -22,7 +23,8 @@ const Blogs = () => {
           }
         })
         if (!req.ok) {
-          throw new Error(`Error ${req.status}: ${req.statusText}`);
+          const statusText = await getStatusMessage(req.status)
+          throw new Error(`Error ${req.status}: ${statusText}`);
         }
         const res = await req.json()
         if (res.success) {
@@ -51,7 +53,8 @@ const Blogs = () => {
           body: JSON.stringify({ _id: _id })
         })
         if (!req.ok) {
-          throw new Error(`Error ${req.status}: ${req.statusText}`);
+          const statusText = await getStatusMessage(req.status)
+          throw new Error(`Error ${req.status}: ${statusText}`);
         }
         const res = await req.json()
         setWait(false)
@@ -71,7 +74,7 @@ const Blogs = () => {
   }
 
   if (!blogsData) {
-    return <Loader/>
+    return <Loader />
   } else if (blogsData.length == 0) {
     return (
       <div className='flex justify-center items-center gap-5'>
