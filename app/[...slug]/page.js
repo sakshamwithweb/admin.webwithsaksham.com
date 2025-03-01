@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast"
 import { notFound, usePathname, useRouter } from 'next/navigation'
 import { Loader } from '@/components/Loader'
 import { getStatusMessage } from '@/lib/statusMessage'
+import { generateToken } from '@/lib/generateToken'
 
 // Memoize(storing like) the component mapping so as to could retreive the component instead of recreating(if exist)
 const componentCache = new Map()
@@ -45,12 +46,14 @@ const Page = () => {
     useEffect(() => {
         const checkSession = async () => {
             try {
+                const { token, id } = await generateToken()
                 const req = await fetch("/api/checkSession", {
                     method: "POST",
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify({ id })
                 })
                 if (!req.ok) {
                     const statusText = await getStatusMessage(req.status)

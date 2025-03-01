@@ -26,6 +26,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "isomorphic-dompurify": "^2.21.0",
+    "jose": "^6.0.8",
     "lucide-react": "^0.469.0",
     "mongoose": "^8.9.2",
     "next": "15.1.2",
@@ -47,7 +48,8 @@
     "tailwind-merge": "^2.5.5",
     "tailwind-scrollbar": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "postcss": "^8",

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Loader } from '../Loader'
 import { getStatusMessage } from '@/lib/statusMessage'
+import { generateToken } from '@/lib/generateToken'
 
 const Dashboard = () => {
   const [edit, setEdit] = useState({ mode: false, editTo: "" })
@@ -17,12 +18,14 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
+        const { token, id } = await generateToken()
         const req = await fetch(`/api/adminDetails`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({})
+          body: JSON.stringify({ id })
         })
         if (!req.ok) {
           const statusText = await getStatusMessage(req.status)

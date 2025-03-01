@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { getStatusMessage } from '@/lib/statusMessage';
+import { generateToken } from '@/lib/generateToken';
 
 
 function getFormattedDate() {
@@ -45,7 +46,7 @@ const AdminBlogsNew = () => {
   const { theme } = useTheme();
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("**Lets Begin!!!**");
-  const [id, setId] = useState(null)
+  const [postId, setPostId] = useState(null)
   const [htmlContent, setHtmlContent] = useState("")
   const [review, setReview] = useState(false)
   const [category, setCategory] = useState("other")
@@ -55,17 +56,19 @@ const AdminBlogsNew = () => {
   const { toast } = useToast()
 
   const handleSubmit = async () => {
+    const timeout = setTimeout(() => controller.abort(), 120000); // 2-minute timeout
     try {
       setWait(true)
       const publishedTime = new Date().toISOString()
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 120000); // 2-minute timeout
+      const { token, id } = await generateToken()
       const req = await fetch(`/api/post`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category }),
+        body: JSON.stringify({ title, content, publishedTime, categoryValue: category === "other" ? otherCategoryValue : category, id }),
         signal: controller.signal,
       })
       clearTimeout(timeout);
@@ -76,7 +79,7 @@ const AdminBlogsNew = () => {
       const res = await req.json()
       setWait(false)
       if (res.success && res.id) {
-        setId(res.id)
+        setPostId(res.id)
         toast({
           title: "✅ Successfully Posted!!",
           description: "You will get your id.",
@@ -123,12 +126,14 @@ const AdminBlogsNew = () => {
   useEffect(() => {
     (async () => {
       try {
+        const { token, id } = await generateToken()
         const req = await fetch(`/api/fetchCategories`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({})
+          body: JSON.stringify({ id })
         })
         if (!req.ok) {
           const statusText = await getStatusMessage(req.status)
@@ -150,7 +155,7 @@ const AdminBlogsNew = () => {
   }, [])
 
 
-  if (id) {
+  if (postId) {
     return (
       <div className='min-h-screen flex flex-col justify-center items-center'>
         <div className='flex flex-col justify-center items-center gap-5'>
@@ -158,7 +163,7 @@ const AdminBlogsNew = () => {
           <h2>Your post has been posted successfully🥳.</h2>
           <div>
             <strong>ID:</strong>
-            <span>&nbsp;{id}</span>
+            <span>&nbsp;{postId}</span>
           </div>
           <Link className='border p-2 rounded-3xl bg-purple-800 text-white' href={"/dashboard"}>Back to Dashboard</Link>
         </div>

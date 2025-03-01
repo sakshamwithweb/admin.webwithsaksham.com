@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { cookies } from "next/headers";
+import { validateJWT } from "./lib/generateToken";
 
 const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
@@ -30,7 +31,29 @@ export async function middleware(req) {
         const ip = req.ip || req.headers.get("x-forwarded-for") || "unknown";
         const rateLimitKey = `admin-${pathname}-${ip}`
         const { success, limit, remaining, reset } = await ratelimit.limit(rateLimitKey);
-        const response = success ? NextResponse.next() : new NextResponse(`Too many requests`, { status: 429 });
+        if (!success) {
+            const response = new NextResponse(`Too many requests`, { status: 429 });
+            response.headers.set("X-RateLimit-Limit", limit);
+            response.headers.set("X-RateLimit-Remaining", remaining);
+            response.headers.set("X-RateLimit-Reset", reset);
+            return response
+        }
+        // Now here write condition for jwt
+        // In GET request we are fetching the param as: id=id, and in rest we are taking from body 
+        let id;
+        if (req.method == "GET") {
+            const searchParams = req.nextUrl.searchParams;
+            id = searchParams.get('id');
+            if(!id) return NextResponse.json({ success: false, message: "Invalid id!" }, { status: 403 })  
+        } else {
+            const payload = await req.json()
+            id = payload.id;
+        }
+        const token = req.headers.get('authorization')?.split(' ')[1]
+        if (!token || !id) return NextResponse.json({ success: false, message: "Didn't get Token" }, { status: 403 })
+        const validateToken = await validateJWT(token, id)
+        if (!validateToken.valid) return NextResponse.json({ success: false, message: "Invalid token!" }, { status: 403 })
+        const response = NextResponse.next();
         response.headers.set("X-RateLimit-Limit", limit);
         response.headers.set("X-RateLimit-Remaining", remaining);
         response.headers.set("X-RateLimit-Reset", reset);

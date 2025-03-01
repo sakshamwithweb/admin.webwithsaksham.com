@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import DOMPurify from "isomorphic-dompurify";
 import { Loader } from '../Loader';
 import { getStatusMessage } from '@/lib/statusMessage';
+import { generateToken } from '@/lib/generateToken';
 
 const About = ({ about }) => {
     const [changedData, setChangedData] = useState(null)
@@ -31,12 +32,14 @@ const About = ({ about }) => {
                     return [key, DOMPurify.sanitize(value)];
                 })
             );
+            const { token, id } = await generateToken()
             const req = await fetch(`/api/adminDetails`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ changedData: sanitizedObject, section: "about" })
+                body: JSON.stringify({ changedData: sanitizedObject, section: "about", id })
             })
             if (!req.ok) {
                 const statusText = await getStatusMessage(req.status)

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Loader } from '../Loader'
 import { getStatusMessage } from '@/lib/statusMessage'
+import { generateToken } from '@/lib/generateToken'
 
 const Blogs = () => {
   const [blogsData, setBlogsData] = useState(null)
@@ -16,10 +17,12 @@ const Blogs = () => {
   useEffect(() => {
     (async () => {
       try {
-        const req = await fetch(`/api/post`, {
+        const { token, id } = await generateToken()
+        const req = await fetch(`/api/post?id=${id}`, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
           }
         })
         if (!req.ok) {
@@ -45,12 +48,14 @@ const Blogs = () => {
     try {
       if (!wait) {
         setWait(true)
+        const { token, id } = await generateToken()
         const req = await fetch(`/api/post`, {
           method: "DELETE",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ _id: _id })
+          body: JSON.stringify({ _id: _id, id })
         })
         if (!req.ok) {
           const statusText = await getStatusMessage(req.status)

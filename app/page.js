@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast"
 import { notFound, useRouter } from 'next/navigation'
 import DOMPurify from "isomorphic-dompurify";
 import { getStatusMessage } from '@/lib/statusMessage'
+import { generateToken } from '@/lib/generateToken'
 
 const page = () => {
     const [userName, setUserName] = useState("")
@@ -18,12 +19,14 @@ const page = () => {
     useEffect(() => {
         (async () => {
             try {
+                const { token, id } = await generateToken()
                 const req = await fetch("/api/checkSession", {
                     method: "POST",
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify({ id })
                 })
                 if (!req.ok) {
                     const statusText = await getStatusMessage(req.status)
@@ -61,12 +64,14 @@ const page = () => {
             }
             const sanitizedUserName = DOMPurify.sanitize(userName);
             const sanitizedPass = DOMPurify.sanitize(pass);
+            const { token, id } = await generateToken()
             const req1 = await fetch(`/api/adminLogin`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ userName: sanitizedUserName, pass: sanitizedPass })
+                body: JSON.stringify({ userName: sanitizedUserName, pass: sanitizedPass, id })
             })
             if (!req1.ok) {
                 const statusText = await getStatusMessage(req1.status)

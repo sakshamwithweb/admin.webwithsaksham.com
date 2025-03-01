@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Loader } from '../Loader';
 import { getStatusMessage } from '@/lib/statusMessage';
+import { generateToken } from '@/lib/generateToken';
 
 const Queries = () => {
   const [queries, setQueries] = useState(null)
@@ -15,10 +16,12 @@ const Queries = () => {
   useEffect(() => {
     (async () => {
       try {
-        const req = await fetch(`/api/question`, {
+        const { token, id } = await generateToken()
+        const req = await fetch(`/api/question?id=${id}`, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
           },
         })
         if (!req.ok) {
@@ -55,12 +58,14 @@ const Queries = () => {
       changedData.map((item, index) => {
         item != queries[index] && changedQueries.push(item._id)
       })
+      const { token, id } = await generateToken()
       const req = await fetch(`/api/question`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ changedQueries: changedQueries })
+        body: JSON.stringify({ changedQueries: changedQueries, id })
       })
       const res = await req.json()
       setWait(false)

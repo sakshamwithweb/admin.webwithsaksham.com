@@ -6,6 +6,7 @@ import { Trash } from 'lucide-react'
 import DOMPurify from "isomorphic-dompurify";
 import { Loader } from '../Loader'
 import { getStatusMessage } from '@/lib/statusMessage'
+import { generateToken } from '@/lib/generateToken'
 
 const Knowledge = ({ knowledge }) => {
     const [changedData, setChangedData] = useState(null)
@@ -32,12 +33,14 @@ const Knowledge = ({ knowledge }) => {
                     return [key, value != 0 ? DOMPurify.sanitize(value) : value]; // if value is number as 0 so don't change or else purify
                 }));
             })
+            const { token, id } = await generateToken()
             const req = await fetch(`/api/adminDetails`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ changedData: sanitizedData, section: "knowledge" })
+                body: JSON.stringify({ changedData: sanitizedData, section: "knowledge", id })
             })
             if (!req.ok) {
                 const statusText = await getStatusMessage(req.status)
